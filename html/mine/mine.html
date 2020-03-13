@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          .inform_box{
+            padding: .2rem .18rem .35rem;
+          }
+          .logo{
+            width: .55rem;
+            height: .55rem;
+            margin-right: .14rem;
+          }
+          .name{
+            line-height: .36rem;
+          }
+          .money{
+            margin-top: .18rem;
+            line-height: .3rem;
+            padding: .1rem 0;
+          }
+          .money>div{
+            width: 50%;
+            padding-left: .05rem;
+          }
+          .money span{
+            font-size: .2rem;
+          }
+          .out{
+            position: relative;
+            top: -.35rem;
+          }
+          .box{
+            background: #fff;
+            width: 3.55rem;
+            margin: 0 auto .18rem;
+            padding: 0 .18rem;
+            border-radius: .06rem;
+          }
+          .list{
+            line-height: .5rem;
+            color: #4D4D4D;
+          }
+          .icon{
+            width: .17rem;
+            height: .17rem;
+            margin-right: .10rem;
+            vertical-align: text-top;
+          }
+          .go{
+            position: absolute;
+            top: .16rem;
+            right: 0;
+            width: .18rem;
+            height: .18rem;
+          }
+          .tel{
+            color: #FF9900;
+            margin-right: .12rem;
+          }
+          .btn{
+            text-align: center;
+            color: #999;
+            line-height: .5rem;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="inform_box bgct">
+      <div class="clearfix">
+        <div class="fl logo">
+          <img class='head_icon' src="../../image/logo.png" alt="">
+        </div>
+        <div class="inform fl">
+          <p class="fs18 name"></p>
+          <p class="mb12 nickname"></p>
+          <p class="fs12">有效期：<span class="exp_time"></span></p>
+        </div>
+      </div>
+      <div class="money just-between">
+        <div onclick="openAlert(0)">余额(元):<span class="balance"></span></div>
+        <div onclick="openAlert(1)">金币:<span class="gold"></span></div>
+      </div>
+    </div>
+    <div class="out">
+      <div class="box">
+        <div class="list pr" tapmode onclick="openOrder('recharge_order')">
+          <img class="icon" src="../../image/icon/i1.png" alt="">
+          <span>充值订单</span>
+          <img class="go" src="../../image/icon/i8.png" alt="">
+        </div>
+        <div class="list pr" tapmode onclick="openOrder('filling_order')">
+          <img class="icon" src="../../image/icon/i2.png" alt="">
+          <span>加油订单</span>
+          <img class="go" src="../../image/icon/i8.png" alt="">
+        </div>
+        <div class="list pr" tapmode onclick="openOrder('rebate_order')">
+          <img class="icon" src="../../image/icon/i3.png" alt="">
+          <span>返利订单</span>
+          <img class="go" src="../../image/icon/i8.png" alt="">
+        </div>
+        <div class="list pr" tapmode onclick="openkalman()">
+          <img class="icon" src="../../image/icon/i9.png" alt="">
+          <span>卡密充值</span>
+          <img class="go" src="../../image/icon/i8.png" alt="">
+        </div>
+      </div>
+      <div class="box">
+        <div class="list pr" onclick="openteach()">
+          <img class="icon" src="../../image/icon/i4.png" alt="">
+          <span>新手教程</span>
+          <img class="go" src="../../image/icon/i8.png" alt="">
+        </div>
+        <div class="list pr" onclick="openList()">
+          <img class="icon" src="../../image/icon/i5.png" alt="">
+          <span class="abouts"></span>
+          <img class="go" src="../../image/icon/i8.png" alt="">
+        </div>
+        <div class="list pr" onclick="openOpinion()">
+          <img class="icon" src="../../image/icon/i6.png" alt="">
+          <span>意见反馈</span>
+          <img class="go" src="../../image/icon/i8.png" alt="">
+        </div>
+        <div class="list clearfix" onclick="opencall()">
+          <img class="icon" src="../../image/icon/i7.png" alt="">
+          <span>客服电话</span>
+          <span class="fr customer_time"></span>
+          <span class="fr tel"></span>
+        </div>
+      </div>
+      <div class="box">
+        <div class="btn" onclick="ouLogin()">
+          退出登录
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript">
+      var informs = document.getElementsByClassName('informs');
+      var text1;
+      var text2;
+      var tel;
+      var app_name;
+      apiready = function(){
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        getData()
+        //商品刷新
+        api.addEventListener({
+            name: 'loadmine'
+        }, function(ret, err){
+            location.reload()
+        });
+        //充值成功
+        api.addEventListener({
+            name: 'recharge_sucess'
+        }, function(ret, err){
+            location.reload()
+        });
+
+
+        //下拉刷新
+        api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: '../../image/loading_more.gif',
+              bgColor: '#ccc',
+              textColor: '#fff',
+              textDown: '下拉刷新...',
+              textUp: '松开刷新...',
+              showTime: true //显示更新时间
+          }, function(ret, err) {
+            // api.refreshHeaderLoadDone()
+            setTimeout(function(){
+              api.refreshHeaderLoadDone();
+              window.location.reload()
+            },1000)
+              //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+      };
+      function openOrder(url) {//打开订单页面
+        api.openWin({
+            name: url,
+            url: './order/'+url+'.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+      }
+      //新手教程
+      function openteach() {
+        var url = host + 'userhelper?app_id='+appid
+        api.openWin({
+            name: 'browser',
+            url: 'widget://html/public/frame_brower.html',
+            pageParam: {
+                tname: '新手教程',
+                url: url
+            }
+        });
+      }
+      //关于
+      function openList() {
+        api.openWin({
+            name: 'about',
+            url: './about.html',
+            pageParam: {
+                about: app_name
+            }
+        });
+
+      }
+      //意见反馈
+      function openOpinion() {
+        api.openWin({
+            name: 'opinion',
+            url: './opinion.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+      }
+      //卡密充值
+      function openkalman() {
+        api.openWin({
+            name: 'kalman',
+            url: '../recharge/kalman.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+
+      }
+      //打开弹窗
+      function openAlert(index) {
+        var text;
+        if(index===0){
+          text = text1
+        }else {
+          text = text2
+        }
+        api.openFrame({
+            name: 'alert',
+            url: 'widget://html/public/alert.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                text: text
+            },
+            bounces: false,
+            bgColor:'rgba(0,0,0,.3)',
+            // animation:{
+            //     type:"movein",
+            //     subType:"from_top",
+            //     duration:50
+            // },
+        });
+      }
+      function getData() {
+        axios({
+          url: 'user/info',
+          data:{
+          }
+        },function(ret){
+          console.log(JSON.stringify(ret));
+          if (ret.code === 200) {
+            $api.text($api.dom('.name'), ret.data.username);
+            $api.text($api.dom('.nickname'), ret.data.nickname);
+            $api.text($api.dom('.exp_time'), ret.data.exp_time);
+            $api.text($api.dom('.balance'), ret.data.balance);
+            $api.text($api.dom('.gold'), ret.data.gold);
+            $api.text($api.dom('.tel'), ret.data.customer_tel);
+            $api.text($api.dom('.customer_time'), ret.data.customer_time);
+            $api.dom('.head_icon').src = ret.data.header_ico
+            text1 = ret.data.balance_tips
+            text2 = ret.data.gold_tips
+            tel = ret.data.customer_tel
+            app_name = ret.data.app_name;
+            $api.text($api.dom('.abouts'), '关于'+app_name);
+          }else {
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+          }
+        })
+      }
+      //拨打电话
+      function opencall() {
+        api.call({
+            type: 'tel_prompt',
+            number: tel
+        });
+      }
+      //退出登录
+      function ouLogin() {
+        api.closeWin({
+            name: 'index'
+        });
+
+        $api.setStorage('is_valid',0);
+        $api.rmStorage('token');
+        $api.rmStorage('username');
+        $api.rmStorage('shoptoken');
+        api.openWin({
+            name: 'index',
+            url: '../../index.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+      }
+  </script>
+  </html>

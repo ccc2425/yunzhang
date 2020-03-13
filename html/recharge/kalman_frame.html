@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          *{
+            outline: none;
+          }
+          .out{
+            padding: .18rem .1rem;
+            font-size: .16rem;
+          }
+          .box{
+            width: 100%;
+            background: #fff;
+            padding: 0 .2rem;
+            border-radius: .04rem;
+            line-height: .5rem;
+          }
+          .box span{
+            display: inline-block;
+            width: .32rem;
+            margin-right: .55rem;
+          }
+          .box input{
+            width: 1.8rem;
+          }
+          .btn{
+            width: 100%;
+            height: .4rem;
+            margin: .18rem auto;
+            line-height: .4rem;
+            text-align: center;
+            font-weight: bold;
+            border-radius: .06rem;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="out">
+        <div class="box">
+          <span>卡密</span>
+          <input type="text" id="ipt" placeholder="请输入充值卡密码">
+        </div>
+        <div class="btn bgbtn" tapmode onclick="apply()">确认充值</div>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript">
+      var state = true;
+      apiready = function(){
+      };
+      // 卡密充值
+      function apply() {
+        $api.dom('.btn').style.background = '#666666';
+        var card_no = $api.dom('#ipt').value;
+        $api.dom('.btn').style.background = '#666666';
+
+        if (state) {
+          state = false;
+          axios({
+            url: 'user/cardrec',
+            data:{
+              card_no:card_no,
+            }
+          },function(ret){
+            console.log(JSON.stringify(ret));
+            if (ret.code === 200) {
+              api.sendEvent({
+                name: 'recharge_sucess',
+                extra: {
+                }
+              });
+              $api.dom('#ipt').value = ''
+              api.toast({
+                  msg: '充值成功',
+                  duration: 1000,
+                  location: 'middle'
+              });
+              setTimeout(function () {
+                api.closeWin();
+              },1000)
+            } else {
+              api.toast({
+                  msg: '卡密不正确',
+                  duration: 1000,
+                  location: 'middle'
+              });
+            }
+          })
+        } else {
+
+        }
+
+
+      }
+  </script>
+  </html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          *{
+            font-size: .15rem;
+          }
+          .box{
+            padding: .1rem;
+          }
+          .list{
+            display: flex;
+            justify-content: space-between;
+            height: .55rem;
+            padding: 0 .25rem 0 .15rem;
+            background: #fff;
+            line-height: .55rem;
+            margin-bottom: .13rem;
+            border-radius: .04rem;
+          }
+          .pay_list{
+            height: .55rem;
+            padding: 0 .25rem 0 .15rem;
+            background: #fff;
+            line-height: .55rem;
+          }
+          .type img{
+            width: .25rem;
+            height: .25rem;
+            margin-right: .18rem;
+            vertical-align: middle;
+          }
+          .bottom{
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+          }
+          .paymoney{
+            width: 100%;
+            height: .55rem;
+            margin-top: .13rem;
+            line-height: .55rem;
+            padding: 0 .2rem 0 .25rem;
+            background: #fff;
+            margin-bottom: .2rem;
+          }
+          .btn{
+            height: .5rem;
+            line-height: .5rem;
+            text-align: center;
+            font-size: .16rem;
+            font-weight: bold;
+          }
+
+
+          input[type="radio"] {
+            width: .18rem;
+            height: .18rem;
+            opacity: 0;
+            display: none;
+          }
+          input[type="checkbox"] {
+            width: .18rem;
+            height: .18rem;
+            opacity: 0;
+            display: none;
+          }
+
+          label {
+            position: absolute;
+            right: .2rem;
+            top: .18rem;
+            width: .18rem;
+            height: .18rem;
+            border-radius: 50%;
+            border: .01rem solid #999;
+          }
+          label.checksbox{
+            right: -.04rem;
+          }
+          /*设置选中的input的样式*/
+          /* + 是兄弟选择器,获取选中后的label元素*/
+          input:checked+label {
+            background-color: #E73444;
+            border: 1px solid #E73444;
+          }
+
+          input:checked+label::after {
+            position: absolute;
+            content: "";
+            width: .05rem;
+            height: .1rem;
+            top: .01rem;
+            left: .04rem;
+            border: .02rem solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg)
+          }
+          .alert_box{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+          }
+          .alert{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: .2rem .3rem .3rem;
+            background: #fff;
+            border-radius: .1rem .1rem 0 0;
+          }
+          .alert_bg{
+            width: 100%;
+            height: calc(100vh - 2.8rem);
+          }
+          .tit{
+            color: #000;
+            font-size: .16rem;
+            font-weight: bold;
+            line-height: .2rem;
+          }
+          .alert_list{
+            height: .5rem;
+            line-height: .5rem;
+          }
+          .btns{
+            height: .4rem;
+            line-height: .4rem;
+            margin-top: .2rem;
+            text-align: center;
+            font-size: .16rem;
+            font-weight: bold;
+            border-radius: .06rem;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="list">
+        <div>充值金额：</div>
+        <div class="cored fs18 bold">￥<span class="balance"></span></div>
+      </div>
+      <div class="list">
+        <div>金币抵扣</div>
+        <div class="cored fs18 bold">-<span class="ded_balance"></span></div>
+      </div>
+      <div class="paychose boradius4">
+        <div class="pay_list">支付方式</div>
+        <div class="pay_list pr">
+          <div class="type"><img src="../../image/wx.png" alt=""><span>微信</span></div>
+          <input id="pay2" type="radio" name="item" value="微信" checked onchange="checks('wxpay')">
+          <label for="pay2"></label>
+        </div>
+        <div class="pay_list pr">
+          <div class="type"><img src="../../image/zfb.png" alt=""><span>支付宝</span></div>
+          <input id="pay1" type="radio" name="item" value="支付宝" onchange="checks('alipay')">
+          <label for="pay1"></label>
+        </div>
+      </div>
+      <div class="just-between paymoney boradius4">
+        <div>合计待支付</div>
+        <div class="fs25 cored bold">￥<span class="actual_balance"></span></div>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="btn bgbtn" onclick="openAlertPay()">立即支付</div>
+    </div>
+    <div class="alert_box">
+      <div class="alert_bg" onclick="closeAlert()"></div>
+      <div class="alert">
+        <div class="tit text-center">金币抵扣</div>
+        <div class="alert_list just-between">
+          <div>可抵扣</div>
+          <div class="cored alert_gold">-9</div>
+        </div>
+        <div class="alert_list just-between co999">
+          <div>金币余额</div>
+          <div class="alert_blance">0</div>
+        </div>
+        <div class="alert_list pr">
+          <div>不使用</div>
+          <input id="pay3" type="checkbox" name="item" value="不使用" onchange="use()" checked>
+          <label for="pay3" class="checksbox"></label>
+        </div>
+        <div class="btns bgbtn" onclick="paysure()">确认</div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript">
+      var rec_id;
+      var pay_type = 'wxpay';
+      var is_ded = 1;
+      var pay_num;
+      var pay1;
+      var pay2;
+      apiready = function(){
+        rec_id = api.pageParam.rec_id
+        console.log(rec_id);
+        getData(1)
+      };
+      function checks(type) {//选择支付方式
+        pay_type = type
+      }
+      //使用优惠券
+      function use() {
+        if ($api.dom('#pay3').checked) {
+          is_ded = 1
+          getData(1)
+        } else {
+          is_ded = 0
+          getData(0)
+        }
+      }
+      //支付确认
+      function paysure() {
+        axios({
+          url: 'user/recpay',
+          data:{
+            rec_id:rec_id,
+            pay_type:pay_type,
+            actual_balance:pay_num,
+            is_ded:is_ded,
+          }
+        },function(ret){
+          console.log(JSON.stringify(ret));
+          if (ret.code === 200) {
+            $api.dom('.alert_box').style.display = 'none';
+            if (ret.data.pay_type === 'alipay') {
+              var url = ret.data.pay_data
+              var aliPayPlus = api.require('aliPayPlus');
+              aliPayPlus.payOrder({
+                  orderInfo: url
+              }, function(ret, err) {
+                  console.log(JSON.stringify(ret));
+                  if (ret.code==='9000') {
+                    api.sendEvent({
+                        name: 'loadmine',
+                        extra: {
+                        }
+                    });
+                    $api.setStorage('is_valid', 1);
+                    api.toast({
+                        msg: '支付成功',
+                        duration: 1000,
+                        location: 'middle'
+                    });
+                    openOrder()
+                  }else if (ret.code==='6001') {
+                    api.toast({
+                        msg: '用户取消支付',
+                        duration: 1000,
+                        location: 'middle'
+                    });
+                  }else if (ret.code==='8000') {
+                    api.toast({
+                        msg: '正在处理中',
+                        duration: 1000,
+                        location: 'middle'
+                    });
+                  } else {
+                    api.toast({
+                        msg: ret.code,
+                        duration: 1000,
+                        location: 'middle'
+                    });
+                  }
+              });
+            } else if (ret.data.pay_type === 'wxpay') {
+              var wxPayPlus = api.require('wxPayPlus');
+              wxPayPlus.payOrder({
+                  apiKey: ret.data.pay_data.apiKey,
+                  orderId: ret.data.pay_data.orderId,
+                  mchId: ret.data.pay_data.mchId,
+                  nonceStr: ret.data.pay_data.nonceStr,
+                  timeStamp: ret.data.pay_data.timeStamp,
+                  package: ret.data.pay_data.package,
+                  sign: ret.data.pay_data.sign
+              }, function(ret, err) {
+                  console.log(JSON.stringify(ret));
+                  console.log(JSON.stringify(err));
+                  if (ret.status) {
+                    $api.setStorage('is_valid', 1);
+                      //支付成功
+                      api.sendEvent({
+                          name: 'loadmine',
+                          extra: {
+                          }
+                      });
+                      api.toast({
+                          msg: '支付成功',
+                          duration: 1000,
+                          location: 'middle'
+                      });
+                      openOrder()
+                  } else {
+                      api.toast({
+                          msg: err.code,
+                          duration: 1000,
+                          location: 'middle'
+                      });
+                  }
+              });
+            } else {
+              $api.setStorage('is_valid', 1);
+              api.sendEvent({
+                  name: 'loadmine',
+                  extra: {
+                  }
+              });
+              api.toast({
+                  msg: ret.msg,
+                  duration: 1000,
+                  location: 'middle'
+              });
+
+            }
+          } else if (ret.code === 203) {
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+            setTimeout(function () {
+              window.location.reload()
+            },1000)
+          } else {
+            $api.dom('.alert_box').style.display = 'none';
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+          }
+        })
+      }
+      //打开订单
+      function openOrder() {
+        setTimeout(function () {
+          api.openWin({
+              name: 'recharge_order',
+              url: '../mine/order/recharge_order.html',
+              pageParam: {
+                  name: 'test'
+              }
+          });
+        },1000)
+      }
+      //关闭弹窗
+      function closeAlert() {
+        $api.dom('.alert_box').style.display = 'none';
+      }
+      function openAlertPay() {//支付弹窗
+        $api.dom('.alert_box').style.display = 'block';
+      }
+      function getData(i) {
+        axios({
+          url: 'user/recinfo',
+          data:{
+            rec_id:rec_id,
+            is_ded:i,
+          }
+        },function(ret){
+          console.log(JSON.stringify(ret));
+          if (ret.code === 200) {
+            $api.text($api.dom('.balance'), ret.data.balance);
+            $api.text($api.dom('.ded_balance'), ret.data.ded_balance);
+            $api.text($api.dom('.actual_balance'), ret.data.actual_balance);
+            $api.text($api.dom('.alert_gold'), '-'+ret.data.ded_balance);
+            $api.text($api.dom('.alert_blance'), ret.data.gold);
+            // pay1 = parseInt(ret.data.balance);
+            // pay2 = parseInt(ret.data.ded_balance);
+            pay_num = ret.data.actual_balance;
+          }else {
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+          }
+        })
+      }
+  </script>
+  </html>

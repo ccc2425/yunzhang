@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/aui-slide.css" /><!--轮播组件-->
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          [v-cloak]{
+            display: none;
+          }
+          .header_out{
+            z-index: 9999999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+          }
+          .header{
+            width: 100%;
+            height: .44rem;
+            background: #E73444;
+            font-size: .14rem;
+            text-align: center;
+            padding: .07rem;
+            color: #333333;
+          }
+          .header_box{
+            display: flex;
+            justify-content: center;
+            width: 1.5rem;
+            height: .3rem;
+            margin: auto;
+            background: #ffffff;
+            border-radius: .06rem;
+            padding: .025rem;
+          }
+          .header_box div{
+            width: 50%;
+            border-radius: .04rem;
+            line-height: .25rem;
+          }
+          .active{
+            background: #E73444;
+            color: #ffffff;
+          }
+          .recond_act{
+            color: #E73444;
+          }
+          .recond_act i{
+            transform: rotate(180deg);
+            display: inline-block;
+            transition: .1s;
+          }
+          .recond{
+            z-index: 9999999;
+            width: 100%;
+            height: .45rem;
+            line-height: .45rem;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            font-size: .15rem;
+            font-weight: bold;
+            background: #ffffff;
+          }
+          .recond>div{
+            width: 50%;
+          }
+          .box{
+            padding: .1rem;
+            background: #eeeeee;
+          }
+          .alert{
+            z-index: 99999;
+            position: fixed;
+            /*top: .89rem;*/
+            left: 0;
+            width: 100%;
+            height: calc(100vh - .89rem);
+            font-size: .15rem;
+          }
+          .bg_top{
+            width: 100%;
+            height: .1rem;
+            background: #eeeeee;
+          }
+          .alert2_box div{
+            width: 100%;
+            height: .5rem;
+            border-bottom: 1px solid #E6E6E6;
+            line-height: .5rem;
+            padding: 0 .1rem;
+            background: #ffffff;
+          }
+          .alert_bg{
+            height: 100%;
+            background: rgba(0,0,0,.4);
+          }
+          .alert1_box{
+            padding: .2rem .1rem;
+            background: #ffffff;
+          }
+          .tit{
+            font-weight: bold;
+            margin-bottom: .16rem;
+            padding-left: .03rem;
+          }
+          .alert_recond span{
+            display: inline-block;
+            width: .76rem;
+            height: .3rem;
+            text-align: center;
+            line-height: .3rem;
+            border: 1px solid #999999;
+            border-radius: .04rem;
+            margin: 0 .17rem .17rem 0;
+          }
+          .alert_recond .actives{
+            background: #E73444;
+            color: #ffffff;
+            border: 1px solid #E73444;
+          }
+          .alert_recond span:nth-child(4n){
+            margin-right: 0;
+          }
+          .list{
+             border-left: .05rem solid #D82D3D;
+             background: #ffffff;
+             border-radius: 4px;
+             padding: .15rem .15rem .15rem .12rem;
+             font-size: .13rem;
+             margin-bottom: .1rem;
+           }
+           .list>div{
+             display: flex;
+             justify-content: space-between;
+           }
+           .top,.middle{
+             margin-bottom: .15rem;
+           }
+           .name{
+             width: 2rem;
+             font-weight: bold;
+             font-size: .18rem;
+             line-height: .38rem;
+           }
+           .price{
+             width: 1.2rem;
+           }
+           .price span{
+             font-size: .33rem;
+           }
+           .adress{
+             color: #2D4384;
+           }
+           .list i{
+             color: #FF9900;
+             margin-right: .05rem;
+           }
+           .old_price{
+             color: #B3B3B3;
+           }
+           .way{
+             color: #FF9900;
+             padding: 0 .1rem;
+             line-height: .23rem;
+             text-align: center;
+             border-radius: .04rem;
+             border: .01rem solid #FF9900;
+           }
+           .btn{
+             width: .9rem;
+             text-align: center;
+             background: #E73444;
+             color: #ffffff;
+             line-height: .23rem;
+             font-size: .13rem;
+             border-radius: .04rem;
+           }
+           .msg_box{
+             width: 100%;
+             height: .35rem;
+             line-height: .35rem;
+             background: #FFEFF0;
+             color: #333333;
+             padding: 0 .1rem;
+             margin-bottom: .01rem;
+           }
+           .msg_name{
+             width: .83rem;
+             font-weight: bold;
+           }
+           .msg{
+             width: 2.6rem;
+             font-size: .14rem;
+           }
+           .banner{
+             /*margin-top: .44rem;*/
+           }
+           #msg_box {
+               overflow: hidden;
+               white-space: nowrap;
+           }
+           #msg,#msg_end {
+               display: inline;
+           }
+           .loads{
+             padding: 1rem;
+             text-align: center;
+           }
+           .loads img{
+             width: 1rem;
+             height: 1rem;
+           }
+      </style>
+  </head>
+  <body>
+    <div id="apps" v-cloak>
+      <div id="header" class="header_out">
+        <div class="header">
+          <div class="header_box">
+            <div :class="{active:index===0}" tapmode @click="choseThis(0)">默认通道</div>
+            <div :class="{active:index===1}" tapmode @click="choseThis(1)">备用通道</div>
+          </div>
+        </div>
+      </div>
+      <div class="banner">
+        <!-- 轮播图 -->
+        <div id="aui-slide">
+          <div id="banner" class="aui-slide-wrap" >
+            <div v-for="item in banner" class="aui-slide-node bg-dark">
+              <img :src="item.img"  @click="openBanner(item.url,item.title)"/>
+            </div>
+            <!-- <div class="aui-slide-node bg-dark">
+              <img src="../../image/ban1.png" />
+            </div>
+            <div class="aui-slide-node bg-dark">
+              <img src="../../image/ban1.png" />
+            </div>
+            <div class="aui-slide-node bg-dark">
+              <img src="../../image/ban1.png" />
+            </div> -->
+          </div>
+          <div class="aui-slide-page-wrap"></div>
+        </div>
+      </div>
+      <div class="msg_box clearfix">
+        <div class="fl msg_name">{{center_msg.title}}</div>
+        <div id="msg_box" class="fl msg">
+          <div id="msg">{{center_msg.msg}}</div>
+          <div id="msg_end"></div>
+        </div>
+      </div>
+      <div class="recond">
+        <div :class="{recond_act:recondIndex===0}" tapmode @click="choseRecond(0)">{{leftText}} <i class="iconfont">&#xe608;</i></div>
+        <div :class="{recond_act:recondIndex===1}" tapmode @click="choseRecond(1)">{{rightText}} <i class="iconfont">&#xe608;</i></div>
+      </div>
+      <div v-if="loadShow" class="loads">
+        <img src="../../image/load.gif" alt="">
+      </div>
+      <div class="box">
+        <div v-for="item in list" class="list" tapmode @click="openGas(item.gasId)">
+          <div class="top">
+            <div class="name texthidden">{{item.gasName}}</div>
+            <div class="price">优惠后￥<span>{{item.priceYfq}}</span></div>
+          </div>
+          <div class="middle">
+            <div class="adress"><i class="iconfont">&#xe61e;</i>{{item.gasAddress}}</div>
+            <div class="old_price"><s>国标价￥{{item.priceOfficial}}</s></div>
+          </div>
+          <div class="bottom">
+            <div class="way" @click.stop="openNavigation(item.gasAddressLongitude,item.gasAddressLatitude)"><i class="iconfont">&#xe86a;</i>{{item.distance}}</div>
+            <div class="btn">每升可抵{{item.priceDeduct}}</div>
+          </div>
+        </div>
+      </div>
+      <div v-show="alert1show" class="alert alert1">
+        <div class="bg_top"></div>
+        <div class="alert1_box">
+          <div v-for="(item,index) in types" :key="index">
+            <div class="tit">{{item.oil_type_name}}</div>
+            <div class="alert_recond">
+              <span v-for="(items,i) in item.oil_list" :class="{actives:alert1_index===items.id}" @click="choseType(items.id,items.oil_no,items.oil_name)">{{items.oil_name}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="alert_bg" @click="closeAlert"></div>
+      </div>
+      <div v-show="alert2show" class="alert alert2">
+        <div class="bg_top"></div>
+        <div class="alert2_box">
+          <div :class="{recond_act:alert2_index===0}" tapmode @click="attribute(0,'距离优先','dis')">距离优先</div>
+          <div :class="{recond_act:alert2_index===1}" tapmode @click="attribute(1,'价格优先','price')">价格优先</div>
+        </div>
+        <div class="alert_bg" tapmode @click="closeAlert"></div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/vue.min.js"></script>
+  <script type="text/javascript" src="../../script/aui-slide.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript">
+      var headerPos;
+      var is_valid_state = false;
+      var upState = true;//判断滑动状态，否则在监听滑动的影响下会取消导航栏定位
+      apiready = function(){
+        console.log($api.getStorage('token'));
+        api.showProgress({
+            title: '努力加载中...',
+            modal: false
+        });
+        api.addEventListener({
+          name:'tabitembtn'
+        },function(ret, err){
+            api.setTabBarAttr({
+              index: ret.index
+            });
+            if (ret.index === 0) {
+               api.sendEvent({
+                   name: 'tofule',
+                   extra: {
+                   }
+               });
+
+             }
+            // if (ret.index === 0&&$api.getStorage('is_valid')==0) {
+            //   api.setFrameAttr({
+            //       name: 'tip',
+            //       hidden:false
+            //   });
+            // }
+        });
+        api.addEventListener({
+            name: 'tofule'
+        }, function(ret, err){
+            location.reload()
+        });
+
+        //下拉刷新
+        api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: '../../image/loading_more.gif',
+              bgColor: '#ccc',
+              textColor: '#fff',
+              textDown: '下拉刷新...',
+              textUp: '松开刷新...',
+              showTime: true //显示更新时间
+          }, function(ret, err) {
+            // api.refreshHeaderLoadDone()
+            setTimeout(function(){
+              api.refreshHeaderLoadDone();
+              window.location.reload()
+            },1000)
+              //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+        ready()
+        // //退出app
+        exitNowApp()
+      };
+      function ready() {
+        var vm = new Vue({
+          el: '#apps',
+          data: {
+            index: 0,
+            recondIndex: 99,
+            alert1_index: 0,
+            alert2_index: 0,
+            alert1show: false,
+            alert2show: false,
+            leftText: '92#',
+            rightText: '距离优先',
+            types: [],
+            // token: '',
+            // appid: '',
+            // spareURl:''
+            list: [],
+            sort: 'def',
+            oil_no: '92',
+            page: 1,
+            pagesize: 6,
+            state: true,
+            lng: $api.getStorage('lng'),
+            lat: $api.getStorage('lat'),
+            banner: [],
+            center_msg: '',
+            reserve_url: '',
+            loadShow: true //载入动画
+
+          },
+          mounted: function mounted() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            var headerH = $api.offset(header).h;
+            headerPos = headerH;
+            $api.dom('.banner').style.marginTop = headerPos + 'px';
+            $api.dom('.alert1').style.top = 'calc(.45rem + ' + headerPos + 'px)';
+            $api.dom('.alert2').style.top = 'calc(.45rem + ' + headerPos + 'px)';
+            console.log($api.getStorage('token'));
+            $api.dom('.recond').style.position = 'sticky';
+            $api.dom('.recond').style.top = headerH + 'px';
+            this.getmain();
+            this.getClassfy();
+            this.getList();
+            this.banners();
+            var this_ = this;
+            api.addEventListener({
+              name: 'scrolltobottom',
+              extra: {
+                threshold: -1 //设置距离底部多少距离时触发，默认值为0，数字类型
+
+              }
+            }, function (ret, err) {
+              this_.loading();
+            });
+          },
+          methods: {
+            getmain: function getmain() {
+              var this_ = this;
+              axios({
+                url: 'oil/home',
+                data: {}
+              }, function (ret) {
+                console.log(JSON.stringify(ret));
+                api.hideProgress();
+
+                if (ret.code === 200) {
+                  $api.setStorage('is_valid', ret.data.is_valid);
+
+                  if (ret.data.is_valid === 0) {
+                    api.openFrame({
+                      name: 'tip',
+                      url: '../public/tip.html',
+                      rect: {
+                        x: 0,
+                        y: 0,
+                        w: 'auto',
+                        h: 'auto'
+                      },
+                      pageParam: {
+                        name: 'test'
+                      },
+                      bounces: false,
+                      bgColor: 'rgba(0,0,0,0.3)'
+                    });
+                  } else {
+                    is_valid_state = true;
+                  }
+
+                  this_.banner = ret.data.banner;
+                  this_.reserve_url = ret.data.reserve_url;
+                  this_.center_msg = ret.data.center_msg;
+                  setTimeout(function () {
+                    this_.banners();
+                    this_.ScrollImgLeft();
+                  });
+                } else {
+                  api.toast({
+                    msg: ret.msg,
+                    duration: 1000,
+                    location: 'middle'
+                  });
+                }
+              });
+            },
+            getList: function getList() {
+              var this_ = this; // alert(this_.lng)
+
+              axios({
+                url: 'oil/gaslist',
+                data: {
+                  sort: this_.sort,
+                  oil_no: this_.oil_no,
+                  page: this_.page,
+                  pagesize: this_.pagesize,
+                  lng: this_.lng,
+                  lat: this_.lat
+                }
+              }, function (ret) {
+                console.log(JSON.stringify(ret));
+                api.hideProgress();
+
+                if (ret.code === 200) {
+                  this_.loadShow = false;
+
+                  if (ret.data.length < this_.pagesize) {
+                    this_.state = false;
+                  }
+
+                  if (this_.page === 1) {
+                    this_.list = ret.data;
+                  } else {
+                    this_.list.push.apply(this_.list, ret.data);
+                  }
+                } else {
+                  api.toast({
+                    msg: ret.msg,
+                    duration: 1000,
+                    location: 'middle'
+                  });
+                }
+              });
+            },
+            banners: function banners() {
+              //轮播图
+              var slide = new auiSlide({
+                container: document.getElementById("aui-slide"),
+                // "width":300,
+                "height": 180,
+                "speed": 300,
+                "autoPlay": 4000,
+                "pageShow": true,
+                "pageStyle": 'dot',
+                "loop": true,
+                'dotPosition': 'center' // currentPage:currentFun
+
+              });
+
+              function currentFun(index) {// console.log(index);
+              }
+            },
+            openBanner: function openBanner(url, title) {
+              api.openWin({
+                name: 'browser',
+                url: 'widget://html/public/frame_brower.html',
+                pageParam: {
+                  tname: title,
+                  url: url
+                }
+              });
+            },
+            getClassfy: function getClassfy() {
+              var this_ = this;
+              axios({
+                url: 'oil/getoilno',
+                data: {}
+              }, function (ret) {
+                if (ret.code === 200) {
+                  this_.types = ret.data;
+                } else {
+                  api.toast({
+                    msg: ret.msg,
+                    duration: 1000,
+                    location: 'middle'
+                  });
+                }
+              });
+            },
+            choseThis: function choseThis(index) {
+              //头部选择
+              this.index = index;
+
+              if (index == 1) {
+                api.openWin({
+                  name: 'browser',
+                  url: 'widget://html/public/frame_brower.html',
+                  pageParam: {
+                    tname: '备用通道',
+                    url: this.reserve_url
+                  }
+                });
+              }
+            },
+            choseRecond: function choseRecond(index) {
+              //外部分类选择
+              this.recondIndex = index;
+              upState = false;
+              $api.dom('.recond').style.position = 'fixed';
+              $api.dom('.recond').style.top = headerPos + 'px'; // $api.dom('.box').marginTop = '.45rem';
+
+              document.body.style.overflow = 'hidden';
+              document.body.addEventListener('touchmove', this.bodyScroll, {
+                passive: false
+              }); //禁止页面滑动
+
+              if (index === 0) {
+                if (this.alert1show) {
+                  this.closeAlert();
+                } else {
+                  this.alert1show = true;
+                  this.alert2show = false;
+                }
+              } else {
+                if (this.alert2show) {
+                  this.closeAlert();
+                } else {
+                  this.alert1show = false;
+                  this.alert2show = true;
+                }
+              }
+            },
+            closeAlert: function closeAlert() {
+              //关闭弹窗
+              upState = true;
+              $api.dom('.recond').style.position = 'sticky';
+              $api.dom('.recond').style.top = headerPos + 'px';
+              $api.dom('.box').style.marginTop = '0';
+              this.alert1show = false;
+              this.alert2show = false;
+              this.recondIndex = 99;
+              document.body.style.overflow = '';
+              document.body.removeEventListener('touchmove', this.bodyScroll, {
+                passive: false
+              }); //允许页面滑动
+            },
+            attribute: function attribute(index, text, type) {
+              this.alert2_index = index;
+              this.rightText = text;
+              this.sort = type;
+              this.getList();
+              this.closeAlert();
+            },
+            choseType: function choseType(id, no, text) {
+              this.alert1_index = id;
+              this.leftText = text;
+              this.oil_no = no;
+              this.getList();
+              this.closeAlert();
+            },
+            bodyScroll: function bodyScroll(event) {
+              //页面滑动
+              event.preventDefault();
+            },
+            openGas: function openGas(gasid) {
+              api.openWin({
+                name: 'gas',
+                url: './gas.html',
+                pageParam: {
+                  gasid: gasid
+                }
+              });
+            },
+            ScrollImgLeft: function ScrollImgLeft() {
+              var speed = 50; //初始化速度 也就是字体的整体滚动速度
+
+              var MyMar = null; //初始化一个变量为空 用来存放获取到的文本内容
+
+              var scroll_begin = document.getElementById("msg"); //获取滚动的开头id
+
+              var scroll_end = document.getElementById("msg_end"); //获取滚动的结束id
+
+              var scroll_div = document.getElementById("msg_box"); //获取整体的开头id
+
+              scroll_end.innerHTML = scroll_begin.innerHTML; //滚动的是html内部的内容,原生知识!
+              //定义一个方法
+
+              function Marquee() {
+                // console.log(scroll_end.offsetWidth-scroll_div.scrollLeft);
+                if (scroll_end.offsetWidth - scroll_div.scrollLeft - $api.dom('.msg_name').offsetWidth - 10 <= 0) {
+                  scroll_div.scrollLeft -= scroll_begin.offsetWidth;
+                } else {
+                  scroll_div.scrollLeft++;
+                }
+              }
+
+              MyMar = setInterval(Marquee, speed); //给上面的方法设置时间  setInterval
+
+              scroll_div.onmouseover = function () {
+                clearInterval(MyMar);
+              };
+
+              scroll_div.onmouseout = function () {
+                MyMar = setInterval(Marquee, speed);
+              };
+            },
+            loading: function loading() {
+              //上拉加载
+              if (this.state) {
+                this.page++;
+                this.getList();
+              }
+            },
+            //导航
+            openNavigation: function openNavigation(lon, lat) {
+              var this_ = this;
+              console.log(lon + ',' + lat);
+              var uri = "";
+              uri += 'androidamap://navi?';
+              uri += 'sourceApplication=' + api.appName;
+              uri += '&poiname=加油站';
+              uri += '&lat=' + lat + '&lon=' + lon;
+              uri += '&dev=1';
+              uri += '&style=2';
+              api.openApp({
+                // androidPkg: 'com.autonavi.minimap',
+                androidPkg: 'android.intent.action.VIEW',
+                appParam: {
+                  lat: lat,
+                  lon: lon,
+                  dev: '0',
+                  style: '2',
+                  sourceApplication: api.appName
+                },
+                iosUrl: 'iosamap://navi',
+                uri: uri
+              }, function (ret, err) {
+                if (ret) {} else {
+                  console.log(JSON.stringify(err)); // api.toast({
+                  //     msg: '未安装高德地图',
+                  //     duration: 1000,
+                  //     location: 'middle'
+                  // });
+
+                  var url = 'http://m.amap.com/navigation/carmap/saddr=' + this_.lng + ',' + this_.lat + '&daddr=' + lon + ',' + lat + '&sort=dist';
+                  api.openWin({
+                    name: 'browser',
+                    url: 'widget://html/public/frame_brower.html',
+                    pageParam: {
+                      tname: '导航',
+                      url: url
+                    }
+                  });
+                }
+              });
+            }
+          }
+        });
+      }
+  </script>
+  </html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          [v-cloak]{
+            display: none;
+          }
+          .box{
+            padding: .15rem .1rem;
+          }
+          .list{
+            padding: .14rem .12rem;
+            background: #ffffff;
+            border-radius: .04rem;
+            margin-bottom: .1rem;
+          }
+          .time{
+            margin-bottom: .14rem;
+          }
+
+          .img_box{
+            width: 1.05rem;
+            height: 1.05rem;
+            margin-right: .09rem;
+          }
+          .inform{
+            width: 2.1rem;
+          }
+          .title{
+            height: .4rem;
+            line-height: .2rem;
+            margin-bottom: .45rem;
+          }
+          .reward{
+            height: .2rem;
+            line-height: .2rem;
+          }
+          .icon{
+            width: .15rem;
+            height: .15rem;
+            margin-right: .06rem;
+            vertical-align: text-top;
+          }
+          .state_sucess{
+            color: #2D4384;
+          }
+          .state_wait{
+            color: #E73444;
+          }
+          .state_invalid{
+            color: #999999;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="apps" v-cloak>
+      <div class="box">
+        <div v-for="item in list" class="list">
+          <div class="time fs13 co999">下单时间：<spn class="co666">{{item.created}}</spn></div>
+          <div class="clearfix">
+            <div class="img_box fl">
+              <img :src="item.master_img" alt="">
+            </div>
+            <div class="inform fl">
+              <div class="texthiddens title">
+                {{item.title}}
+              </div>
+              <div class="just-between reward">
+                <div class="cored bold"><img class="icon" src="../../../image/l3.png" alt="">+金币{{item.ygsr}}</div>
+                <div :class="[item.status== '订单成功' ? 'state_sucess': '', item.status=='订单付款'? 'state_wait': '',item.status=='订单失效'? 'state_invalid': '',item.status=='订单结算'? 'state_sucess': '']">{{item.status}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.min.js"></script>
+  <script type="text/javascript" src="../../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../../script/md5.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        ready()
+      };
+
+function ready() {
+  var vm = new Vue({
+    el: '#apps',
+    data: {
+      list: [],
+      page: 1,
+      pagesize: 8,
+      state: true
+    },
+    mounted: function mounted() {
+      this.getmain();
+      var this_ = this;
+      api.addEventListener({
+        name: 'scrolltobottom',
+        extra: {
+          threshold: -1 //设置距离底部多少距离时触发，默认值为0，数字类型
+
+        }
+      }, function (ret, err) {
+        this_.loading();
+      });
+    },
+    methods: {
+      getmain: function getmain() {
+        var _this = this;
+
+        axios({
+          url: 'user/tborder',
+          data: {
+            page: _this.page,
+            pagesize: _this.pagesize
+          }
+        }, function (ret) {
+          console.log(JSON.stringify(ret));
+
+          if (ret.code === 200) {
+            if (ret.data.length < _this.pagesize) {
+              _this.state = false;
+            }
+
+            if (_this.page === 1) {
+              _this.list = ret.data;
+            } else {
+              _this.list.push.apply(_this.list, ret.data);
+            }
+          } else {
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+          }
+        });
+      },
+      loading: function loading() {
+        if (this.state) {
+          this.page++;
+          this.getmain();
+        }
+      }
+    },
+    // 过滤器根据 status 返回状态文字
+    filters: {
+      getStatus: function getStatus(key) {
+        var status = '';
+
+        switch (key) {
+          case 'sucess':
+            status = "已完成";
+            break;
+
+          case 'wait':
+            status = "等待结算";
+            break;
+
+          case 'invalid':
+            status = "已失效";
+            break;
+        }
+
+        return status;
+      }
+    }
+  });
+}
+  </script>
+  </html>

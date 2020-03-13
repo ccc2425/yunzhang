@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          .header{
+            line-height: .4rem;
+          }
+          .icon{
+            left: 2vw;
+          }
+
+      </style>
+  </head>
+  <body>
+    <!-- 头部 -->
+      <div id="header" class="pr text-center borderb1e header">
+          <i onclick="closewin()" class="iconfont pa icon">&#xe601;</i>
+          <!-- <img src="" alt=""> -->
+          <span id="title">衣服</span>
+          <!-- <i class="iconfont fr mr2v">&#xe627;</i> -->
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+      var paixu = document.getElementsByClassName('paixu');
+      apiready = function(){
+        var tit = api.pageParam.title;
+        var value = api.pageParam.value;
+        // var id2 = api.pageParam.id2;
+        var title = $api.byId('title');
+        title.innerText = tit;
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        var headerPos = $api.offset(header);
+        api.openFrame({
+            name: 'list_frame',
+            url: './list_frame.html',
+            rect: {
+                x: 0,
+                y:headerPos.h,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                value: value,
+                // id2: id2
+            },
+            bounces: true,
+        });
+      };
+      // 排序
+      var a = 0;
+      var b = 0;
+      var c = 0;
+      var aa;
+      var bb;
+      var cc;
+      function sort(index,val) {
+        var sorts = document.getElementsByClassName('sorts')
+        var len = sorts.length
+        var i = 0;
+        var curLi = sorts[index];
+        for (i; i < len; i++) {
+            var thisLi = sorts[i];
+            if (thisLi === curLi) {
+                $api.addCls(thisLi, 'active');
+                continue;
+            } else {
+                if ($api.hasCls(thisLi, 'active')) {
+                    $api.removeCls(thisLi, 'active');
+                }
+            }
+        }
+        var fnSort = "fnSortframe('" + val + "');"
+        api.execScript({
+           //  name: 'winName',
+            frameName: 'list_frame',
+            script: fnSort
+        });
+       }
+      //  //布局
+      //  function layout() {
+      //    var fungoto = "layoutframe();"
+      //    api.execScript({
+      //       //  name: 'winName',
+      //        frameName: 'itemlist_frame',
+      //        script: fungoto
+      //    });
+      //  }
+  </script>
+  </html>

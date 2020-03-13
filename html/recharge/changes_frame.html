@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          *{
+            outline: none;
+          }
+          .box{
+            padding: .5rem .2rem .2rem;
+            background: #ffffff;
+          }
+          .img_box{
+            width: .66rem;
+            height: .66rem;
+            margin: 0 auto .2rem;
+          }
+          .ipt{
+            width: 100%;
+            height: .4rem;
+            line-height: .4rem;
+          }
+          .ipt span{
+            display: inline-block;
+            width: 1rem;
+            margin-right: .1rem;
+            font-size: .16rem;
+          }
+          .ipt img{
+            width: .18rem;
+            height: .18rem;
+            vertical-align: text-bottom;
+            margin-right: .1rem;
+          }
+          .ipt img.shou{
+            width: .16rem;
+            margin-left: .01rem;
+            margin-right: .11rem;
+          }
+          .ipt input{
+            width: 2rem;
+            height: 100%;
+          }
+          .btn{
+            width: 3.2rem;
+            height: .4rem;
+            line-height: .4rem;
+            border-radius: .04rem;
+            text-align: center;
+            margin: .2rem auto;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="img_box">
+        <img src="../../image/icon/i10.png" alt="">
+      </div>
+      <div class="ipt_box">
+        <div class="ipt borderb1e">
+          <span><img class="shou" src="../../image/icon/i13.png" alt="">充值手机</span>
+          <input type="number" id="mobile" name="" value="" placeholder="请输入需要充值的手机号码">
+        </div>
+        <div class="ipt borderb1e">
+          <span><img src="../../image/icon/i11.png" alt="">充值卡号</span>
+          <input type="number" id="card" name="" value="" placeholder="请输入卡号">
+        </div>
+        <div class="ipt">
+          <span><img class="shou" src="../../image/icon/i12.png" alt="">充值卡密</span>
+          <input type="text" id="password" name="" value="" placeholder="请输入卡密">
+        </div>
+      </div>
+    </div>
+    <div onclick="sureRecharge()" tapmode class="btn bgbtn">
+      确认充值
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript">
+      var state;
+      var mobile = $api.byId('mobile');
+      var card = $api.byId('card');
+      var password = $api.byId('password');
+      apiready = function(){
+        state = api.pageParam.state
+        mobiles = api.pageParam.mobile
+        if (state === 'login') {
+          mobile.value = mobiles
+          mobile.disabled = true;
+        }
+      };
+      //
+      function sureRecharge() {
+        axios({
+          url: 'user/cardrec',
+          data:{
+            card_no:card.value,
+            card_pwd:password.value,
+            username:mobile.value,
+          }
+        },function(ret){
+          console.log(JSON.stringify(ret));
+          if (ret.code === 200) {
+            api.toast({
+              msg: '充值成功',
+              duration: 500,
+              location: 'middle'
+            });
+            setTimeout(function () {
+              if (state === 'login') {
+                $api.setStorage('token', ret.data.token);
+                $api.setStorage('username', mobile.value);
+                params = {
+                  name: 'tabLayout',
+                  hideTabBar: false,
+                    name: 'nav-tab',
+                    bgColor:'#fff',
+                    slidBackEnabled: false,
+                    tabBar: {
+                      scrollEnabled: false,
+                        animated: true,
+                        background: '#FFFFFF',
+                        fontSize:14,
+                        color:'#666666',
+                        selectedColor:'#E73444',
+                        list: [
+                            {
+                                text: "加油",
+                                iconPath: "widget://image/foot/b10.png",
+                                selectedIconPath: "widget://image/foot/b11.png"
+                            }, {
+                                text: "商城",
+                                iconPath: "widget://image/foot/b20.png",
+                                selectedIconPath: "widget://image/foot/b21.png"
+                            }, {
+                                text: "充值",
+                                iconPath: "widget://image/foot/b30.png",
+                                selectedIconPath: "widget://image/foot/b31.png"
+                            }, {
+                                text: "我的",
+                                iconPath: "widget://image/foot/b40.png",
+                                selectedIconPath: "widget://image/foot/b41.png"
+                            }
+                        ],
+                        frames: [
+                            {
+                                title: "加油",//tab切换时对应的标题
+                                name: "fuel",
+                                url: "widget://html/fuel/fuel.html",
+                                //其他继承自openFrame的参数
+                            }, {
+                                title: "商城",
+                                name: "shop",
+                                url: "widget://html/shop/shop.html"
+                                //其他继承自openFrame的参数
+                            }, {
+                                title: "充值",
+                                name: "recharge",
+                                url: "widget://html/recharge/recharge.html"
+                                //其他继承自openFrame的参数
+                            }, {
+                                title: "我的",
+                                name: "mine",
+                                url: "widget://html/mine/mine.html"
+                                //其他继承自openFrame的参数
+                            }
+                        ]
+                    }
+                }
+                api.openTabLayout(params);
+              } else {
+                  api.closeWin();
+              }
+            },500)
+          }else {
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+          }
+        })
+      }
+  </script>
+  </html>

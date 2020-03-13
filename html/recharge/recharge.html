@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          [v-cloak]{
+            display: none;
+          }
+          .header{
+            /*height: .4rem;*/
+            line-height: .4rem;
+          }
+          .iconfont{
+            right: .2rem
+          }
+          .box{
+            padding: 10px;
+          }
+          .list{
+            background: #fff;
+            border-radius: 6px;
+            margin-bottom: .11rem;
+          }
+          .list_out{
+            border: 2px solid #ffffff;
+            border-radius: 6px;
+          }
+          .list_box{
+            padding: .3rem .35rem;
+          }
+          .price{
+            height: .57rem;
+            margin-right: .45rem;
+            line-height: .57rem;
+          }
+          .reward{
+            margin-bottom: .14rem;
+          }
+          .bonus{
+            color: #2D4384;
+            font-size: .13rem;
+            line-height: .15rem;
+          }
+          .active{
+            background: url(../../image/bg1.png) no-repeat;
+            background-size: 100% 100%;
+          }
+          .tuijian{
+            position: absolute;
+            top: 0;
+            right: .25rem;
+            width: .31rem;
+            height: .44rem;
+          }
+          .chose_img{
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: .36rem;
+            height: .33rem;
+          }
+          /*.btn_box{
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+          }*/
+          .btn{
+            position: fixed;
+            left: 50%;
+            bottom: .4rem;
+            width: 3.3rem;
+            height: .4rem;
+            line-height: .4rem;
+            font-size: .16rem;
+            text-align: center;
+            transform: translateX(-50%);
+            border-radius: 4px;
+          }
+      </style>
+  </head>
+  <body>
+    <!-- 头部 -->
+    <div id="header" class="text-center header fs16 bold">
+        在线充值
+        <i class="iconfont pa fs20" tapmode onclick="openCode()">&#xe648;</i>
+    </div>
+    <div id="apps" v-cloak>
+      <div class="box">
+        <div v-for="(item,i) in list" class="list" @click="choseThis(i,item.id)">
+          <div class="list_out pr" :class="{active:index===i}">
+            <div class="clearfix list_box">
+              <div class="price fl cored fs18 bold">
+                ￥<span class="fs36">{{item.balance}}</span>
+              </div>
+              <div class="fl">
+                <p class="reward fs15">延长<span class="fs24 bold">{{item.exp_day}}</span>天加油时长</p>
+                <p class="bonus">{{item.user_balance_tip}}</p>
+              </div>
+            </div>
+            <div v-if='item.is_rec' class="tuijian">
+              <img src="../../image/l2.png" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="btn_box">
+        <div class="btn bgbtn" tapmode @click="openCredit">立即充值</div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/vue.min.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        ready()
+        api.addEventListener({
+            name: 'recharge_sucess'
+        }, function(ret, err){
+          api.openFrame({
+              name: 'confirm',
+              url: 'widget://html/public/sucess.html',
+              rect: {
+                  x: 0,
+                  y: 0,
+                  w: 'auto',
+                  h: 'auto'
+              },
+              pageParam: {
+                  // text: text
+              },
+              bounces: false,
+              bgColor:'rgba(0,0,0,.3)',
+          });
+        });
+
+      };
+      function ready() {
+        var vm = new Vue({
+          el: '#apps',
+          data: {
+            index: 0,
+            list: [],
+            rec_id: ''
+          },
+          mounted: function mounted() {
+            this.getmain();
+          },
+          methods: {
+            choseThis: function choseThis(index, id) {
+              this.index = index;
+              this.rec_id = id;
+            },
+            getmain: function getmain() {
+              var this_ = this;
+              axios({
+                url: 'user/getrecharge',
+                data: {}
+              }, function (ret) {
+                console.log(JSON.stringify(ret));
+
+                if (ret.code === 200) {
+                  this_.list = ret.data;
+                  this_.rec_id = ret.data[0].id;
+                } else {
+                  api.toast({
+                    msg: ret.msg,
+                    duration: 1000,
+                    location: 'middle'
+                  });
+                }
+              });
+            },
+            openCredit: function openCredit() {
+              //支付
+              api.openWin({
+                name: 'credit',
+                url: './credit.html',
+                pageParam: {
+                  id: this.rec_id
+                }
+              });
+            }
+          }
+        });
+      }
+      function openCode() {//扫码页面
+        api.openWin({
+            name: 'code_rechange',
+            url: './code_rechange.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+      }
+  </script>
+  </html>

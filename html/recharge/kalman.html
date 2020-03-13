@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          .header{
+            /*height: .4rem;*/
+            line-height: .4rem;
+          }
+          .left{
+            left: 0
+          }
+          .right{
+            right: .2rem
+          }
+      </style>
+  </head>
+  <body>
+    <!-- 头部 -->
+    <div id="header" class="text-center header fs16 bold">
+        <i onclick="closewin()" class="iconfont pa ml3v left">&#xe601;</i>
+        卡密充值
+        <i class="iconfont pa fs20 right" tapmode onclick="openCode()">&#xe648;</i>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        var headerH = $api.offset(header);
+          api.openFrame({
+              name: 'kalman_frame',
+              url: './kalman_frame.html',
+              rect: {
+                  x: 0,
+                  y: headerH.h,
+                  w: 'auto',
+                  h: 'auto'
+              },
+              pageParam: {
+              },
+              bounces: false,
+          });
+      };
+      function openCode() {//扫码页面
+        api.openWin({
+            name: 'code_rechange',
+            url: './code_rechange.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+      }
+  </script>
+  </html>

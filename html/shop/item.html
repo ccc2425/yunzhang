@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+
+          }
+      </style>
+  </head>
+  <body>
+
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        var goods_id = api.pageParam.goods_id
+        api.openFrame({
+            name: 'item_frame',
+            url: './item_frame.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                goods_id: goods_id,
+            },
+            bounces: false,
+        });
+        api.addEventListener({
+            name: 'loaditem'
+        }, function(ret, err){
+            location.reload()
+        });
+
+      };
+  </script>
+  </html>

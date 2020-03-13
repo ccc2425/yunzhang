@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+            padding-top: .1rem
+          }
+          [v-cloak]{
+            display: none;
+          }
+          .box,.box2{
+            width: 3.55rem;
+            margin: 0 auto .1rem;
+            padding: .14rem;
+            background: #ffffff;
+            border-radius: .04rem;
+          }
+          .box2{
+            padding: .1rem;
+            margin-bottom: .9rem;
+          }
+          .img_box{
+            width: .7rem;
+            height: .7rem;
+            margin-right: .1rem;
+          }
+          .name{
+            width: 1.2rem;
+            height: .4rem;
+            line-height: .2rem;
+            font-size: .15rem;
+            /*margin-bottom: .06rem;*/
+          }
+          .price{
+            font-size: .13rem;
+            color: #666666;
+          }
+          .price span{
+            color: #E73444;
+            font-size: .14rem;
+          }
+          .price span span{
+            font-size: .33rem;
+            font-family: DIN-1451-Mittelschrift-Regular;
+          }
+          .inform{
+            font-size: .12rem;
+            color: #2D4384;
+            padding: .1rem .15rem;
+            margin-top: .1rem;
+            background: #F5F5F5;
+            text-align: center;
+            line-height: .2rem;
+          }
+          .inform span{
+            color: #FF9900;
+          }
+          .adress{
+            font-size: .13rem;
+            color: #999999;
+            margin-top: .15rem;
+          }
+          .tit{
+            font-size: .15rem;
+            font-weight: bold;
+            margin-bottom: .16rem;
+            padding-left: .03rem;
+            margin-top: .09rem;
+          }
+          .alert_recond span{
+            display: inline-block;
+            width: .76rem;
+            height: .3rem;
+            text-align: center;
+            line-height: .3rem;
+            border: 1px solid #999999;
+            border-radius: .04rem;
+            margin: 0 .09rem .1rem 0;
+          }
+          .alert_recond .actives{
+            background: #E73444;
+            color: #ffffff;
+            border: 1px solid #E73444;
+          }
+          .alert_recond span:nth-child(4n){
+            margin-right: 0;
+          }
+          .box_box{
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            padding-bottom: .3rem;
+            background: #ffffff;
+          }
+          .buy{
+            width: 100%;
+            height: .5rem;
+            line-height: .5rem;
+            background: #E73444;
+            color: #ffffff;
+            text-align: center;
+            font-size: .16rem;
+            font-weight: bold;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="apps" v-cloak>
+      <div class="box">
+        <div class="clearfix">
+          <div class="fl img_box"><img :src="inform.gas_ico" alt=""></div>
+          <div class="fl forms">
+            <p class="name texthiddens">{{inform.gasName}}</p>
+            <p class="price">油惠价 <span>￥<span>{{price}}</span></span></p>
+          </div>
+          <div class="fr inform">
+            <p>比国标降 <span>{{priceduct1}}</span> 元</p>
+            <p>比油站降 <span>{{priceduct2}}</span> 元</p>
+          </div>
+        </div>
+        <div class="adress"><i class="iconfont">&#xe61e;</i> {{inform.gasAddress}}</div>
+      </div>
+      <div class="box2">
+        <div>
+          <div class="tit">选择商品</div>
+          <div class="alert_recond">
+            <span v-for="(item,i) in types" :class="{actives:thisIndex[0] === i}" @click="choseGoods(i)">{{item.oil_type}}</span>
+          </div>
+        </div>
+        <div>
+          <div class="tit">选择油号</div>
+          <div class="alert_recond">
+            <span v-for="(items,i) in types[index].oil_list" :class="{actives:thisIndex[1] === i}" @click="choseOil(i,items.priceYfq,items.priceDeduct,items.priceGas)">{{items.oilName}}</span>
+          </div>
+        </div>
+        <div>
+          <div class="tit">选择枪号</div>
+          <div class="alert_recond">
+            <span v-for="(itemss,i) in types[index].oil_list[index1].gunNos" :class="{actives:thisIndex2 === i}" @click="choseNum(i,itemss.gunId)">{{itemss.gunName}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="box_box">
+        <div class="buy" @click="openOrder">立即购买</div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/vue.min.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript">
+      var gasid;
+      apiready = function(){
+        gasid = api.pageParam.gasid
+        api.showProgress({
+            title: '努力加载中...',
+            modal: false
+        });
+
+        ready()
+      };
+      function ready() {
+        var vm = new Vue({
+          el: '#apps',
+          data: {
+            types: [],
+            inform: '',
+            thisIndex: [0, 0],
+            thisIndex2: 999,
+            index: 0,
+            index1: 0,
+            lng: $api.getStorage('lng'),
+            lat: $api.getStorage('lat'),
+            price: '',
+            priceduct1: '',
+            priceduct2: '',
+            gun_id: ''
+          },
+          mounted: function mounted() {
+            this.getmain();
+            api.hideProgress();
+          },
+          methods: {
+            getmain: function getmain() {
+              var this_ = this;
+              axios({
+                url: 'oil/gasdes',
+                data: {
+                  gas_id: gasid,
+                  lng: this.lng,
+                  lat: this.lat
+                }
+              }, function (ret) {
+                console.log(JSON.stringify(ret));
+
+                if (ret.code === 200) {
+                  this_.inform = ret.data;
+                  this_.types = ret.data.oil_list;
+                  this_.price = ret.data.oil_list[0].oil_list[0].priceYfq;
+                  this_.priceduct1 = ret.data.oil_list[0].oil_list[0].priceDeduct;
+                  this_.priceduct2 = ret.data.oil_list[0].oil_list[0].priceGas;
+                } else {
+                  api.toast({
+                    msg: ret.msg,
+                    duration: 1000,
+                    location: 'middle'
+                  });
+                }
+              });
+            },
+            choseGoods: function choseGoods(index) {
+              this.index = index;
+              this.index1 = 0;
+              this.thisIndex = [index, 0];
+              this.thisIndex2 = 999;
+            },
+            choseOil: function choseOil(index, price, priceduct1, priceduct2) {
+              this.index1 = index;
+              this.thisIndex[1] = index;
+              this.thisIndex2 = 999;
+              this.price = price;
+              this.priceduct1 = priceduct1;
+              this.priceduct2 = priceduct2;
+            },
+            choseNum: function choseNum(index, id) {
+              this.thisIndex2 = index;
+              this.gun_id = id;
+            },
+            openOrder: function openOrder() {
+              console.log(this.gun_id);
+
+              if (!this.gun_id) {
+                api.toast({
+                  msg: '请选择枪号',
+                  duration: 1000,
+                  location: 'middle'
+                });
+              } else {
+                var this_ = this;
+                axios({
+                  url: 'oil/pay',
+                  data: {
+                    gas_id: gasid,
+                    gun_id: this_.gun_id
+                  }
+                }, function (ret) {
+                  console.log(JSON.stringify(ret));
+
+                  if (ret.code === 200) {
+                    // console.log(ret.data.pay_url);
+                    api.openWin({
+                      name: 'browser',
+                      url: 'widget://html/public/frame_brower.html',
+                      pageParam: {
+                        tname: '支付订单',
+                        url: ret.data.pay_url
+                      }
+                    });
+                  } else {
+                    api.toast({
+                      msg: ret.msg,
+                      duration: 1000,
+                      location: 'middle'
+                    });
+                  }
+                });
+              }
+            }
+          }
+        });
+      }
+  </script>
+  </html>

@@ -1,0 +1,31 @@
+ <widget id="A6023906190767"  version="0.0.1">
+    <name>加油</name>
+    <description>
+        Example For APICloud.
+    </description>
+    <author email="developer@apicloud.com" href="http://www.apicloud.com">
+        Developer
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="pageBounce" value="false"/>
+	<preference name="appBackground" value="rgba(0,0,0,0.0)"/>
+	<preference name="windowBackground" value="rgba(0,0,0,0.0)"/>
+	<preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>
+	<preference name="hScrollBarEnabled" value="false"/>
+	<preference name="vScrollBarEnabled" value="false"/>
+	<preference name="autoLaunch" value="true"/>
+	<preference name="fullScreen" value="false"/>
+	<preference name="autoUpdate" value="true" />
+	<preference name="smartUpdate" value="true" />
+	<preference name="debug" value="false"/>
+	<preference name="statusBarAppearance" value="true"/>
+	<permission name="readPhoneState" />
+	<permission name="camera" />
+	<permission name="record" />
+	<permission name="location" />
+	<permission name="fileSystem" />
+	<permission name="internet" />
+	<permission name="bootCompleted" />
+	<permission name="hardware" />  <!-- //ios应用证书 -->  <preference name="appCertificateVerify" value="false" />  <!--  -->  <access origin="*"/>  <feature name="push"/>  <feature name="aMapLocation">    <param name="android_api_key" value="4dc9a4039abc2ffa7b5b419f700ffb09"></param>    <param name="ios_api_key" value="7777a127257ef2771d69e4cb8bc146a8" ></param>  </feature>  <feature name="wxPayPlus">    <param name="urlScheme" value="wx5f0f8effa1ecd12d"/>    <param name="apiKey" value="wx5f0f8effa1ecd12d"/>    <param name="apiSecret" value="92afa2abbc0b022e98561a3e6ab8ac28"/>    <param name="universalLink" value="https://bjtest.apicloud.com"/>  </feature>  <feature name="aliPayPlus">      <param name="urlScheme" value="" />  </feature>
+</widget>

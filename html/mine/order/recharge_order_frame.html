@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          [v-cloak]{
+            display: none;
+          }
+          .box{
+            padding: .15rem .1rem;
+          }
+          .list{
+            padding: .14rem .12rem;
+            background: #ffffff;
+            border-radius: .04rem;
+            margin-bottom: .1rem;
+          }
+          .time{
+            margin-bottom: .14rem;
+          }
+
+          .img_box{
+            width: .6rem;
+            height: .6rem;
+            margin-right: .16rem;
+            color: #fff;
+            border-radius: .04rem;
+            text-align: center;
+            padding: .08rem 0;
+            line-height: .2rem;
+          }
+          .inform{
+            width: 2.5rem;
+          }
+          .title{
+            height: .2rem;
+            line-height: .2rem;
+            margin-bottom: .05rem;
+          }
+          .bouns,.reward{
+            height: .2rem;
+            line-height: .2rem;
+          }
+          .bouns{
+            font-size: .13rem;
+            color: #2D4384;
+            margin-bottom: .1rem;
+          }
+          .icon{
+            width: .15rem;
+            height: .15rem;
+            margin-right: .06rem;
+            vertical-align: text-top;
+          }
+          .state_sucess{
+            color: #2D4384;
+          }
+          .state_fail{
+            color: #E73444;
+          }
+          .state_sucess_bg{
+            background: #E73444;
+          }
+          .state_fail_bg{
+            background: #999999;
+          }
+          .end_price{
+            width: 1.2rem;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="apps" v-cloak>
+      <div class="box">
+        <div v-for="item in list" class="list">
+          <div class="time fs13 just-between">
+            <spn class="co666">{{item.createtime}}</spn>
+            <div :class="[item.ex_type== '1' ? 'state_sucess': '', item.ex_type=='0'? 'state_fail': '']">{{item.ex_type | getStatus(item.ex_type)}}</div>
+          </div>
+          <div class="clearfix">
+            <div class="img_box fl" :class="[item.ex_type== '1' ? 'state_sucess_bg': 'state_fail_bg']">
+                <div class="fs10">充值金额</div>
+                <div class="bold fs12"><span>￥</span><span class="fs20">{{item.balance}}</span></div>
+            </div>
+            <div class="inform fl">
+              <div class="texthidden title">
+                {{item.exp_day_tip}}
+              </div>
+              <div class="bouns">{{item.user_balance_tip}}</div>
+              <div class="just-between reward co666 fs13">
+                <div class="">金币抵扣：-￥{{item.ded_balance}}</div>
+                <div class="end_price">实付：<span class="cored fs15 bold">￥{{item.actual_balance}}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../../script/api.js"></script>
+  <script type="text/javascript" src="../../../script/vue.min.js"></script>
+  <script type="text/javascript" src="../../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../../script/md5.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        ready()
+      };
+function ready() {
+  var vm = new Vue({
+    el: '#apps',
+    data: {
+      list: [],
+      page: 1,
+      pagesize: 8,
+      state: true
+    },
+    mounted: function mounted() {
+      this.getmain();
+      var this_ = this;
+      api.addEventListener({
+        name: 'scrolltobottom',
+        extra: {
+          threshold: -1 //设置距离底部多少距离时触发，默认值为0，数字类型
+
+        }
+      }, function (ret, err) {
+        this_.loading();
+      });
+    },
+    methods: {
+      getmain: function getmain() {
+        var _this = this;
+
+        axios({
+          url: 'user/recorder',
+          data: {
+            page: _this.page,
+            pagesize: _this.pagesize
+          }
+        }, function (ret) {
+          console.log(JSON.stringify(ret));
+
+          if (ret.code === 200) {
+            if (ret.data.length < _this.pagesize) {
+              _this.state = false;
+            }
+
+            if (_this.page === 1) {
+              _this.list = ret.data;
+            } else {
+              _this.list.push.apply(_this.list, ret.data);
+            }
+          } else {
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+          }
+        });
+      },
+      loading: function loading() {
+        if (this.state) {
+          this.page++;
+          this.getmain();
+        }
+      }
+    },
+    // 过滤器根据 status 返回状态文字
+    filters: {
+      getStatus: function getStatus(key) {
+        var status = '';
+
+        switch (key) {
+          case 1:
+            status = "充值成功";
+            break;
+
+          case 0:
+            status = "充值失败";
+            break;
+        }
+
+        return status;
+      }
+    }
+  });
+}
+  </script>
+  </html>

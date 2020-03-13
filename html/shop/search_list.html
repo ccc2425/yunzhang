@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          *{
+            outline: none;
+          }
+          .header {
+              width: 100%;
+              padding: .1rem;
+              box-sizing: border-box;
+              line-height: .3rem;
+          }
+
+          .icon {
+              left: 2vw;
+          }
+
+          .search_btn {
+              position: absolute;
+              right: 3%;
+              z-index: 2;
+              color: white;
+              font-size: .14rem;
+              line-height: .3rem;
+          }
+
+          .ipt_box {
+              position: relative;
+              width: 2.8rem;
+              height: .3rem;
+              margin: 0 .45rem 0 .3rem;
+              line-height: .3rem;
+              border-radius: .3rem;
+              font-size: .12rem;
+              background: #fff;
+              color: #999;
+              padding-left: .2rem;
+              box-sizing: border-box;
+          }
+
+          .ipt {
+              width: 100%;
+              height: 100%;
+          }
+          /**/
+          #sorting{
+            width: 100%;
+          }
+          .sorting {
+            width: 90vw;
+            height: .4rem;
+            display: flex;
+            justify-content: space-around;
+            line-height: .4rem;
+            background-color: #fff;
+            color: #aaa;
+          }
+          .paixu{
+            width: 8px;
+            height: .1rem;
+          }
+          .active{
+            color: #E73444;
+          }
+          .activei{
+            transform: rotate(180deg);
+            display: inline-block;
+            transition: .1s;
+          }
+      </style>
+  </head>
+  <body>
+    <!-- 头部 -->
+      <div id="header" class="pr text-center borderb1e header">
+          <i onclick="closewin()" class="iconfont pa icon">&#xe601;</i>
+          <div class="search_btn" onclick="search()">搜索</div>
+          <div class="ipt_box">
+              <input type="text" class="ipt iconfont fs13" placeholder="&#xe710; 搜索想要的商品">
+          </div>
+          <!-- <i class="iconfont fr mr2v">&#xe627;</i> -->
+      </div>
+      <!-- 排序 -->
+      <div id="sorting" class="clearfix bgcf">
+        <div class="sorting fl fs12">
+          <div class="sorts active" tapmode onclick="sort(0,'')">综合 <i class="iconfont">&#xe608;</i></div>
+          <div class="sorts" tapmode onclick="sort(1,'sales')">销量 <i class="iconfont">&#xe608;</i></div>
+          <div class="sorts" tapmode onclick="sort(2,'price')">价格 <i class="iconfont">&#xe608;</i></div>
+        </div>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+      var paixu = document.getElementsByClassName('paixu');
+      apiready = function(){
+        var value = api.pageParam.value;
+        var tag = api.pageParam.tag;
+        // var id2 = api.pageParam.id2;
+        var title = $api.byId('title');
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        var headerPos = $api.offset(header);
+        var sortingPos = $api.offset($api.dom('#sorting'));
+        api.openFrame({
+            name: 'search_list_frame',
+            url: './search_list_frame.html',
+            rect: {
+                x: 0,
+                y:headerPos.h+sortingPos.h,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                value: value,
+                tag:tag
+            },
+            bounces: true,
+        });
+      };
+      //搜索
+      function search() {
+        var ipt = $api.dom('.ipt').value;
+        console.log(ipt);
+        api.sendEvent({
+            name: 'checkTab',
+            extra: {
+                type:'search',
+                val: ipt,
+            }
+        });
+      }
+      //选择排序
+      function sort(index,field) {
+        var sorts = document.getElementsByClassName('sorts')
+        for (var i = 0; i < sorts.length; i++) {
+          var thisSorts = sorts[i]
+          if (i===index) {
+            $api.addCls(thisSorts, 'active');
+          } else {
+            if ($api.hasCls(thisSorts, 'active')) {
+              $api.removeCls(thisSorts, 'active');
+            }
+          }
+        }
+        api.sendEvent({
+            name: 'checkTab',
+            extra: {
+                type:'sort',
+                val: field,
+            }
+        });
+      }
+  </script>
+  </html>

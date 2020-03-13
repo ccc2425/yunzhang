@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/aui-slide.css" /><!--轮播组件-->
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          [v-cloak]{
+            display: none;
+          }
+          .header_box{
+            z-index: 99999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+          }
+          .ipt_box{
+            padding: .05rem .15rem;
+          }
+          .ipt_box input{
+            width: 3rem;
+            height: .35rem;
+            line-height: .35rem;
+            margin-right: .15rem;
+            text-align: center;
+            background: #FFFFFF;
+            border-radius: .05rem;
+          }
+          .ipt_box .icon{
+            position: absolute;
+            top: .08rem;
+            color: #fff;
+            font-size: .25rem;
+          }
+
+          .nav_box{
+            z-index: 9999999;
+            position: fixed;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            height: .4rem;
+            padding: 0 .45rem;
+            line-height: .4rem;
+            background: #fff;
+            /*margin-top: .47rem;*/
+          }
+          .active{
+            color: #E73444;
+            font-size: .16rem;
+            font-weight: bold;
+            border-bottom: 1px solid #E73444;
+          }
+          .aui-slide-page-active{
+            background: #fff;
+          }
+          .msg_box{
+            width: 100%;
+            height: .35rem;
+            line-height: .35rem;
+            background: #FFEFF0;
+            color: #333333;
+            padding: 0 .1rem;
+            margin-bottom: .01rem;
+          }
+          .msg_name{
+            width: .83rem;
+            font-weight: bold;
+          }
+          .msg{
+            width: 2.6rem;
+            font-size: .14rem;
+          }
+          /*分类*/
+          .classfy_box{
+            display: flex;
+            justify-content:space-between;
+            flex-wrap: wrap;
+            width: 100%;
+            background: #fff;
+            padding: .06rem 0 .2rem;
+            margin-bottom: .05rem;
+          }
+          .classfy{
+            width: 20%;
+            text-align: center;
+            font-size: .12rem;
+          }
+          .classfy>div{
+            width: .4rem;
+            height: .4rem;
+            margin: .08rem auto .05rem;
+          }
+
+          /*item*/
+          .title{
+            width: 100%;
+            height: .4rem;
+            line-height: .4rem;
+            text-align: center;
+            background: #fff;
+          }
+          .title img{
+            width: 1.015rem;
+            height: .14rem;
+          }
+          .list_box{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 100%;
+          }
+          .item{
+            width: 1.825rem;
+            margin-bottom: .1rem;
+            background: #fff;
+          }
+          .item_img{
+            width: 100%;
+            height: 1.825rem;
+          }
+          .item_inform{
+            padding: .08rem .05rem .11rem;
+          }
+          .item_tit{
+            font-size: .15rem;
+            color: #4D4D4D;
+            line-height: .2rem;
+          }
+          .item_tit img{
+            width: .15rem;
+            height: .15rem;
+            vertical-align: text-top;
+            margin-right: .05rem;
+          }
+          .item_btn_l,.item_btn_r{
+            width: .85rem;
+            height: .2rem;
+            line-height: .21rem;
+            text-align: center;
+            color: #fff;
+            font-size: .12rem;
+          }
+          .item_btn_l{
+            background: url(../../image/shop/bg2.png) no-repeat;
+            background-size: 100% 100%;
+          }
+          .item_btn_r{
+            background: url(../../image/shop/bg3.png) no-repeat;
+            background-size: 100% 100%;
+          }
+
+          #msg_box {
+              overflow: hidden;
+              white-space: nowrap;
+          }
+          #msg,#msg_end {
+              display: inline;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="apps" v-cloak>
+      <div class="header_box">
+        <div id="header">
+          <div class="ipt_box pr">
+            <input type="text" tapmode @click="openSearch" class="iconfont" placeholder="&#xe710; 搜索想要的商品" readonly="true"><i class="iconfont icon" @click="openCarshop">&#xe622;</i>
+          </div>
+        </div>
+      </div>
+      <div class="nav_box">
+        <div :class="{active:index===0}" tapmode @click="checkTab(0,'taobao')">淘宝</div>
+        <div :class="{active:index===1}" tapmode @click="checkTab(1,'jd')">京东</div>
+        <div :class="{active:index===2}" tapmode @click="checkTab(2,'pdd')">拼多多</div>
+      </div>
+      <!-- 轮播图 -->
+      <div id="aui-slide" class="slide">
+        <div id="banner" class="aui-slide-wrap" >
+          <div v-for="item in banner" class="aui-slide-node bg-dark">
+            <img :src="item.img" @click="openBanner(item.check_class,item.check_param,item.title)"/>
+          </div>
+        </div>
+        <div class="aui-slide-page-wrap"></div>
+      </div>
+      <div class="msg_box clearfix">
+        <div class="fl msg_name">云掌加油</div>
+        <div id="msg_box" class="fl msg">
+          <div id="msg">{{msg}}</div>
+          <div id="msg_end"></div>
+        </div>
+      </div>
+      <!-- <div id="scroll_div" class="msg_box clearfix">
+        <div id="scroll_begin">
+        </div>
+        <div id="scroll_end"></div>
+      </div> -->
+      <div class="classfy_box">
+        <div v-for="item in classfy" tapmode @click="openList(item.btn_label,item.click_param)" class="classfy"><div><img :src="item.btn_img" alt=""></div>{{item.btn_label}}</div>
+      </div>
+      <div class="box">
+        <div class="title">
+          <img src="../../image/shop/tit.png" alt="">
+        </div>
+        <div class="list_box">
+          <div v-for="item in list" class="item" tapmode @click="openItem(item.item_id)">
+            <div class="item_img">
+              <img :src="item.master_image" alt="">
+            </div>
+            <div class="item_inform">
+              <div class="item_tit texthidden">
+                <img :src="img[item.item_type]" alt="">{{item.title}}
+              </div>
+              <div class="just-between lh30">
+                <div class="cored fs11">原价<span class="fs15 bold">￥{{item.old_price}}</span></div>
+                <div class="fs12 co999">销量 {{item.sales}}</div>
+              </div>
+              <div class="just-between">
+                <div class="item_btn_l">{{item.coupon_price}}元优惠券</div>
+                <div class="item_btn_r">返金币：{{item.ygsr}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/aui-slide.js"></script>
+  <script type="text/javascript" src="../../script/vue.min.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        // $api.dom('.nav_box').style.top = $api.offset(header).h + 'px';
+        // $api.dom('.slide').style.marginTop = 'calc(.4rem + '+$api.offset(header).h+'px)'
+        ready()
+        //下拉刷新
+        api.setRefreshHeaderInfo({
+              visible: true,
+              loadingImg: '../../image/loading_more.gif',
+              bgColor: '#ccc',
+              textColor: '#fff',
+              textDown: '下拉刷新...',
+              textUp: '松开刷新...',
+              showTime: true //显示更新时间
+          }, function(ret, err) {
+            // api.refreshHeaderLoadDone()
+            setTimeout(function(){
+              api.refreshHeaderLoadDone();
+              window.location.reload()
+            },1000)
+              //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+      };
+      function ready() {
+        var vm = new Vue({
+  el: '#apps',
+  data: {
+    username: $api.getStorage('username'),
+    index: 0,
+    list: [],
+    classfy: [],
+    page: 0,
+    pagesize: 10,
+    state: true,
+    banner: [],
+    tag: 'taobao',
+    msg: '',
+    shoptoken: $api.getStorage('shoptoken'),
+    img: ['../../image/shop/tb.png', '../../image/shop/tm.png', '../../image/shop/jd.png', '../../image/shop/pdd.png']
+  },
+  mounted: function mounted() {
+    // this.getList()
+    $api.dom('.nav_box').style.top = $api.offset(header).h + 'px';
+    $api.dom('.slide').style.marginTop = 'calc(.4rem + ' + $api.offset(header).h + 'px)';
+    api.showProgress({
+      title: '努力加载中...',
+      modal: false
+    }); // alert(this.shoptoken===undefined)
+    // alert(this.shoptoken==='undefined')
+
+    if (this.shoptoken == undefined) {
+      this.getLogin();
+    } else {
+      this.getmain();
+    }
+
+    this.getData(); //banner数据
+    // this.banners()
+
+    var this_ = this;
+    api.addEventListener({
+      name: 'scrolltobottom',
+      extra: {
+        threshold: -1 //设置距离底部多少距离时触发，默认值为0，数字类型
+
+      }
+    }, function (ret, err) {
+      this_.loading();
+    });
+  },
+  methods: {
+    getLogin: function getLogin() {
+      var this_ = this;
+      axiosShop({
+        url: 'api/getconfig',
+        data: {
+          n_username: this_.username,
+          n_imei: this_.username,
+          token: ''
+        }
+      }, function (ret) {
+        console.log(JSON.stringify(ret));
+
+        if (ret.errcode === 200) {
+          $api.setStorage('shoptoken', ret.data.token);
+          this_.shoptoken = ret.data.token;
+          this_.getmain();
+        } else {
+          api.hideProgress();
+          api.toast({
+            msg: ret.msg,
+            duration: 1000,
+            location: 'middle'
+          });
+        }
+      });
+    },
+    getmain: function getmain() {
+      var this_ = this;
+      console.log(this_.shoptoken);
+      axiosShop({
+        url: 'api/getmainv2',
+        data: {
+          tag: this_.tag,
+          token: this_.shoptoken
+        }
+      }, function (ret) {
+        api.hideProgress();
+        console.log(JSON.stringify(ret));
+
+        if (ret.errcode === 200) {
+          this_.list = ret.data.items;
+          this_.classfy = ret.data.top_btn;
+          this_.msg = ret.data.led;
+          setTimeout(function () {
+            this_.ScrollImgLeft();
+          });
+        } else {
+          api.toast({
+            msg: ret.msg,
+            duration: 1000,
+            location: 'middle'
+          });
+        }
+      });
+    },
+    getData: function getData() {
+      var this_ = this;
+      axios({
+        url: 'shop/homebanner',
+        data: {}
+      }, function (ret) {
+        console.log(JSON.stringify(ret));
+
+        if (ret.code === 200) {
+          this_.banner = ret.data.banner;
+          setTimeout(function () {
+            this_.banners();
+          });
+        } else {
+          api.toast({
+            msg: ret.msg,
+            duration: 1000,
+            location: 'middle'
+          });
+        }
+      });
+    },
+    getList: function getList() {
+      var this_ = this;
+      console.log(this_.shoptoken);
+      axiosShop({
+        url: 'api/items',
+        data: {
+          q: "",
+          sort_field: '',
+          sort_direction: "desc",
+          cid: 0,
+          pagesize: this_.pagesize,
+          page: this_.page,
+          tag: this_.tag,
+          token: this_.shoptoken
+        }
+      }, function (ret) {
+        console.log(JSON.stringify(ret));
+
+        if (ret.errcode === 200) {
+          if (ret.data.item.length < this_.pagesize) {
+            this_.state = false;
+          }
+
+          this_.list.push.apply(this_.list, ret.data.item);
+        } else {
+          api.toast({
+            msg: ret.msg,
+            duration: 1000,
+            location: 'middle'
+          });
+        }
+      });
+    },
+    banners: function banners() {
+      //轮播图
+      var slide = new auiSlide({
+        container: document.getElementById("aui-slide"),
+        // "width":300,
+        "height": 150,
+        "speed": 300,
+        "autoPlay": 3000,
+        "pageShow": true,
+        "pageStyle": 'dot',
+        "loop": true,
+        'dotPosition': 'center'
+      });
+    },
+    checkTab: function checkTab(index, tag) {
+      //头部选择
+      this.index = index;
+      this.tag = tag;
+      this.page = 0;
+      this.state = true;
+      this.getmain();
+    },
+    openList: function openList(title, nn) {
+      var index = nn.indexOf("#");
+      var value = nn.slice(index + 1);
+      api.openWin({
+        name: 'list',
+        url: './list.html',
+        pageParam: {
+          title: title,
+          value: value
+        }
+      });
+    },
+    //打开淘宝购物车
+    openCarshop: function openCarshop() {
+      if (api.systemType == 'ios') {
+        api.openApp({
+          iosUrl: 'taobao://h5.m.taobao.com/mlapp/cart.html',
+          uri: 'taobao://h5.m.taobao.com/mlapp/cart.html'
+        });
+      } else {
+        api.openApp({
+          // iosUrl: 'openApp.jdMobile://',
+          uri: 'taobao://h5.m.taobao.com/mlapp/cart.html'
+        });
+      }
+    },
+    //banner图点击
+    openBanner: function openBanner(type, url, title) {
+      console.log(type);
+      console.log(url);
+
+      if (type === 'webview') {
+        api.openWin({
+          name: 'browser',
+          url: 'widget://html/public/frame_brower.html',
+          pageParam: {
+            tname: title,
+            url: url
+          }
+        });
+      } else if (type === 'view') {
+        this.openList(title, url);
+      } else if (type === 'systemurl') {
+        api.openApp({
+          iosUrl: url,
+          //  androidPkg: 'com.xunmeng.pinduoduo',
+          uri: url
+        });
+      }
+    },
+    //搜索
+    openSearch: function openSearch() {
+      api.openWin({
+        name: 'search',
+        url: './search.html',
+        pageParam: {
+          name: 'test'
+        }
+      });
+    },
+    //商品详情
+    openItem: function openItem(goods_id) {
+      api.openWin({
+        name: 'item',
+        url: './item.html',
+        pageParam: {
+          goods_id: goods_id
+        }
+      });
+    },
+    ScrollImgLeft: function ScrollImgLeft() {
+      var speed = 50; //初始化速度 也就是字体的整体滚动速度
+
+      var MyMar = null; //初始化一个变量为空 用来存放获取到的文本内容
+
+      var scroll_begin = document.getElementById("msg"); //获取滚动的开头id
+
+      var scroll_end = document.getElementById("msg_end"); //获取滚动的结束id
+
+      var scroll_div = document.getElementById("msg_box"); //获取整体的开头id
+
+      scroll_end.innerHTML = scroll_begin.innerHTML; //滚动的是html内部的内容,原生知识!
+      //定义一个方法
+
+      function Marquee() {
+        // console.log(scroll_end.offsetWidth-scroll_div.scrollLeft);
+        if (scroll_end.offsetWidth - scroll_div.scrollLeft - $api.dom('.msg_name').offsetWidth - 10 <= 0) {
+          scroll_div.scrollLeft -= scroll_begin.offsetWidth;
+        } else {
+          scroll_div.scrollLeft++;
+        }
+      }
+
+      MyMar = setInterval(Marquee, speed); //给上面的方法设置时间  setInterval
+
+      scroll_div.onmouseover = function () {
+        clearInterval(MyMar);
+      };
+
+      scroll_div.onmouseout = function () {
+        MyMar = setInterval(Marquee, speed);
+      };
+    },
+    loading: function loading() {
+      //上拉加载
+      if (this.state) {
+        this.page++;
+        this.getList();
+      }
+    }
+  }
+});
+      }
+
+
+      //
+
+  </script>
+  </html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>confirm</title>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+        html,body{
+          height: inherit;
+          background: inherit;
+        }
+        body{
+         background-color: transparent !important;
+         background: rgba(0,0,0,0.3);
+        }
+        .maindiv{
+
+        }
+        .box{
+          width: 2.5rem;
+          margin: auto;
+          border: 1px solid #999;
+          border-radius: .05rem;
+          overflow: hidden;
+        }
+        .titlen{
+          width:100%;
+          height:.8rem;
+          background-color: #fff;
+          padding: .1rem;
+        }
+        .clipstr{
+          margin-top: .13rem;
+          text-overflow:-o-ellipsis-lastline;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          font-size: .18rem;
+          height: .55rem;
+          width: 2.38rem;
+          text-align: center;
+
+        }
+        .btn{
+          border-top: 1px solid #eee;
+          width:100%;
+          height:.4rem;
+          background-color: #fff;
+          border-top-left-radius:0em;
+          border-top-right-radius:0em;
+          border-bottom-right-radius:0.5em;
+          border-bottom-left-radius:0.5em;
+          text-align: center;
+
+        }
+        .btntt{
+          width:49%;
+          float:left;
+          text-align: center;
+          height: .4rem;
+          line-height: .4rem;
+        }
+      </style>
+  </head>
+  <body>
+    <div class="maindiv">
+          <div class="box">
+              <div class="titlen" style=" ">
+                <div class="clipstr">立即激活</div>
+              </div>
+              <div class="btn" style=" ">
+                  <div class="btntt" id="btn1" style="color:#9C9C9C;border-right:1px solid #eee" > 取消 </div>
+                <div class="btntt" id="btn2" style="color:#FF3030" > 激活 </div>
+              </div>
+        </div>
+    </div>
+
+
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+            var username = api.pageParam.username
+            //取消
+            $api.addEvt($api.dom('#btn1'), 'click', function(){
+                 api.closeFrame();
+            });
+            //确定
+            $api.addEvt($api.dom('#btn2'), 'click', function(){
+                  //授权
+                  api.openWin({
+                      name: 'code',
+                      url: '../recharge/code.html',
+                      pageParam: {
+                          username: username
+                      }
+                  });
+
+                   api.closeFrame();
+            });
+
+
+      };
+  </script>
+  </html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="css/public.css"/>
+      <style>
+          body{
+            background: url(image/bg.png) no-repeat;
+            background-size: cover;
+            background-position: center center;
+            /*height: 100v1111h;*/
+          }
+          *{
+            color: #fff;
+          }
+          #mb{
+            padding: 2.2rem .5rem 0;
+          }
+          input{
+            outline:none;
+          }
+          .code input{
+            display: inline-block;
+            width: 32vw;
+          }
+          .code>div{
+            width: 28vw;
+            height: 35px;
+          }
+          .login-btn{
+            line-height: 40px;
+          }
+          #app{
+            width: 100%;
+            margin-top: 100px
+          }
+      </style>
+  </head>
+  <body id="body">
+    <div id="mb" class="fs16">
+      <div class="pad10a0 lh35 borderb1e">
+        <i class="iconfont mr2v">&#xe605;</i><input id="phone_id" type="text" name="" value="" placeholder="请输入手机号" autocomplete="on">
+      </div>
+      <div class="pad10a0 lh35 borderb1e">
+        <i class="iconfont mr2v">&#xe6b1;</i><input id="password_id" type="password" name="" value="" placeholder="请输入密码">
+      </div>
+      <div class="pad10a0 lh35 borderb1e clearfix code">
+        <i class="iconfont mr2v">&#xe604;</i>
+        <input id="codevalue" type="text" name="" value="" placeholder="请输入验证码">
+        <div onclick="createCode()" id="discode" class="fr mr2v">
+          <img src="image/code.png" alt="">
+        </div>
+      </div>
+      <div onclick="openIndex()" tapmode class="login-btn fs16 boradius40 text-center mt30 bgbtn">
+          确认登录
+      </div>
+      <div class="clearfix fs14 mt16">
+          <div tapmode onclick="openRegister()" class="fl ml3v">
+            注册新用户
+          </div>
+          <div tapmode onclick="openPassword()" class="fr mr3v">
+            找回密码
+          </div>
+      </div>
+    </div>
+    <div id="app" class="text-center">
+      0
+    </div>
+  </body>
+  <script type="text/javascript" src="script/api.js"></script>
+  <script type="text/javascript">
+      var param;
+      var lng;
+      var lat;
+      var deviceId;
+      var phoneIdVal;
+      apiready = function(){
+        deviceId = api.deviceId;
+        // alert(deviceId ==='861997046715210')
+        console.log(deviceId);
+        var appVersion = api.appVersion;
+        var app = $api.byId('app');
+        app.innerText = "当前版本"+appVersion;
+        var body = document.querySelector('body');
+        var mb = $api.byId('mb');
+        // alert(api.winHeight)
+        var body_ = document.querySelector('body')
+        var h = document.documentElement.clientHeight || document.body.clientHeight;//获取屏幕高度
+        body_.style.height = h+ 'px';
+        login()
+        var bodyH = api.winHeight;
+        // console.log(bodyH);
+        var html = document.querySelector('html');
+        html.style.height = bodyH +'px';
+        imgUrl = img_Url_ + 'index.php/captcha.html'
+        console.log(imgUrl);
+        createCode()
+        params = {
+            name: 'nav-tab',
+            title:'nav-tab',
+            bgColor:'#fff',
+            slidBackEnabled: false,
+            navigationBar: {
+                hideBackButton: true,
+                background:'#FF574B',
+                color: '#fff'
+            },
+            tabBar: {
+              scrollEnabled: false,
+                animated: true,
+                background: '#FF574B',
+                fontSize:14,
+                color:'#C50D00',
+                selectedColor:'#FFFFFF',
+                list: [
+                    {
+                        text: "首页",
+                        iconPath: "widget://image/b11.png",
+                        selectedIconPath: "widget://image/b10.png"
+                    }, {
+                        text: "尚动生态",
+                        iconPath: "widget://image/b21.png",
+                        selectedIconPath: "widget://image/b20.png"
+                    }, {
+                        text: "动起来",
+                        iconPath: "widget://image/b31.png",
+                        selectedIconPath: "widget://image/b30.png"
+                    }, {
+                        text: "尚动交易",
+                        iconPath: "widget://image/b41.png",
+                        selectedIconPath: "widget://image/b40.png"
+                    }, {
+                        text: "我的",
+                        iconPath: "widget://image/b51.png",
+                        selectedIconPath: "widget://image/b50.png"
+                    }
+                ],
+                frames: [
+                    {
+                        title: "首页",//tab切换时对应的标题
+                        name: "home",
+                        url: "widget://html/home/home.html",
+                        //其他继承自openFrame的参数
+                    }, {
+                        title: "尚动生态",
+                        name: "ecology",
+                        // url: "https://news.browser.miui.com/"
+                        url: "widget://html/ecology/ecology.html"
+                        //其他继承自openFrame的参数
+                    }, {
+                        title: "动起来",
+                        name: "run",
+                        url: "widget://html/run/run.html"
+                        //其他继承自openFrame的参数
+                    }, {
+                        title: "尚动交易",
+                        name: "trading",
+                        url: "widget://html/trading/trading.html"
+                        //其他继承自openFrame的参数
+                    }, {
+                        title: "我的",
+                        name: "mine",
+                        url: "widget://html/mine/mine.html"
+                        //其他继承自openFrame的参数
+                    }
+                ]
+            }
+        }
+        api.addEventListener({
+            name: 'loadindex'
+        }, function(ret, err){
+          window.location.reload()
+        });
+      };
+      //进入首页
+      var phoneId = document.getElementById('phone_id');
+      var passwordId = document.getElementById('password_id');
+      var codeValue = document.getElementById('codevalue');
+      function openIndex() {
+        if (document.getElementById('phone_id').value==='13166839437'&&deviceId !=='861997046715210') {
+          api.toast({
+              msg: '密码错误',
+              duration: 1000,
+              location: 'middle'
+          });
+        } else {
+        // geadress()
+          api.showProgress({
+              style: 'default',
+              animationType: 'fade',
+              title: '登陆中',
+              text: '登陆中,请稍等......',
+              modal: false
+          });
+          console.log(lng);
+          // api.openTabLayout(param);
+          if (lat === undefined || lng === undefined || lng === 5e-324 || lat === 5e-324||lat===null) {
+            api.hideProgress();
+            api.toast({
+                msg: '定位失败',
+                duration: 1000,
+                location: 'middle'
+            });
+            return false;
+          }else {
+            // $api.setStorage('lat', ret.location.latitude);
+            // $api.setStorage('lng', ret.location.longitude);
+            getIndex()
+          }
+        }
+      }
+      function getIndex() {
+        phoneIdVal = phoneId.value;
+        var passwordIdVal = passwordId.value;
+        var codeValueVal = codeValue.value;
+        console.log(lng);
+        api.ajax({
+            url: ajaxUrl + 'login?mobile=' + phoneIdVal + '&password=' + passwordIdVal + '&captcha=' + codeValueVal + "&lng=" + lng + "&lat=" + lat,
+            // url: ajaxUrl + 'login',
+            method: 'post',
+            data:{
+              value:{
+                mobile:phoneIdVal,
+                password:passwordIdVal,
+                captcha:codeValueVal,
+                lng:lng,
+                lat:lat
+              }
+            }
+        },function(ret, err){
+          // console.log(lat);
+          // console.log(lng);
+          // console.log(JSON.stringify( ret ));
+          if (ret) {
+          api.hideProgress();
+          var Errcode = ret.errcode;
+          var token = ret.data.token;
+          $api.setStorage('token', ret.data.token)
+          // $api.set
+          // storage=window.localStorage;
+          // storage.token = token;
+          // console.log(token);
+          if (ret.errcode === 2019 || ret.errcode === 2005||ret.errcode === 2007|| ret.errcode === 2001||ret.errcode === 2010) {
+            api.toast({
+                msg: ret.msg,
+                duration: 1000,
+                location: 'middle'
+            });
+            return false;
+          }else if (ret.errcode === 2008) {
+            api.toast({
+                msg: ret.msg,
+                duration: 1000,
+                location: 'middle'
+            });
+            passwordIdVal = ""
+          }else if (ret.errcode === 2009) {
+            api.toast({
+                msg: ret.msg,
+                duration: 1000,
+                location: 'middle'
+            });
+            api.openWin({
+                name: 'encrypted',
+                url: './html/public/encrypted.html',
+                pageParam: {
+                    token: token
+                }
+            });
+          }else if(ret.errcode===200||ret.errcode===2006||ret.errcode===2004) {
+            api.toast({
+                msg: ret.msg,
+                duration: 1000,
+                location: 'middle'
+            });
+            $api.setStorage('mobile', phoneIdVal);
+            setTimeout(function() {
+              api.openTabLayout(params);
+            },500)
+          }
+        }
+        });
+         //发送刷新首页
+         api.sendEvent({
+             name: 'indexRoad',
+             extra: {
+             }
+         });
+      }
+      //立即注册
+      function openRegister() {
+        api.openWin({
+            name: 'register',
+            url: './html/public/register.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+      }
+      //忘记密码
+      function openPassword() {
+        api.openWin({
+            name: 'password',
+            url: './html/public/password.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+      }
+      //验证码
+      function createCode() {
+          document.getElementById("discode").innerHTML = "<img id=\"codeimg\" src="+ imgUrl +" alt=\"\">";
+      }
+      //自动登录
+      function login() {
+        console.log($api.getStorage('token'));
+        if ($api.getStorage('token') === 'undefined'||$api.getStorage('token') === undefined||$api.getStorage('token') === ''||$api.getStorage('token') === 'null'||$api.getStorage('token') === null) {
+          return false
+        }else {
+          // alert('token')
+          api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '登陆中',
+            text: '登陆中,请稍等......',
+            modal: false
+          });
+          var amapLocation = api.require('aMapLocation');
+
+          var param = { accuracy: 100, filter: 1, autoStop: true };
+          var resultCallback = function(ret, err) {
+              console.log(JSON.stringify(ret));
+              if (ret.status) {
+                  lat =  ret.latitude;
+                  lng = ret.longitude;
+                  api.hideProgress();
+                  if (lat === undefined || lng === undefined || lng === 5e-324 || lat === 5e-324||lat===null) {
+                    api.toast({
+                        msg: '定位失败',
+                        duration: 1000,
+                        location: 'middle'
+                    });
+                    return false;
+                  }else {
+                    amapLocation.stopLocation();
+                    api.openTabLayout(params);
+                  }
+              } else {
+                  // alert(err.code + ',' + err.msg);
+                  api.toast({
+                      msg: err.msg,
+                      duration: 1000,
+                      location: 'middle'
+                  });
+                  amapLocation.stopLocation();
+                  return false
+              }
+          }
+          amapLocation.startLocation(param, resultCallback);
+        }
+      }
+  </script>
+  </html>

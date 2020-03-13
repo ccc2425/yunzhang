@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/public.css" />
+    <style>
+        body {}
+        *{
+          outline: none;
+        }
+        .header {
+            width: 100%;
+            padding: .1rem;
+            box-sizing: border-box;
+            line-height: .3rem;
+        }
+
+        .icon {
+            left: 2vw;
+        }
+
+        .search_btn {
+            position: absolute;
+            right: 3%;
+            z-index: 2;
+            color: white;
+            font-size: .14rem;
+            line-height: .3rem;
+        }
+
+        .ipt_box {
+            position: relative;
+            width: 2.8rem;
+            height: .3rem;
+            margin: 0 .45rem 0 .3rem;
+            line-height: .3rem;
+            border-radius: .3rem;
+            font-size: .12rem;
+            background: #fff;
+            color: #999;
+            padding-left: .2rem;
+            box-sizing: border-box;
+        }
+
+        .ipt {
+            width: 100%;
+            height: 100%;
+        }
+        .out{
+          padding: .1rem;
+        }
+        .yangs{
+          line-height: .2rem;
+          margin-bottom: .08rem;
+        }
+        .yangs span{
+          font-size: .16rem;
+          font-weight: bold;
+        }
+        .yan{
+          margin-bottom: .32rem;
+        }
+        .yan span{
+          padding: 0 .12rem;
+          height: .24rem;
+          line-height: .24rem;
+          background: #ffffff;
+          border-radius: .04rem;
+          margin: 0 .07rem .09rem;
+        }
+        /**/
+        .nav_box{
+          padding: .05rem .5rem;
+        }
+        .nav_box>div{
+          width: .8rem;
+          text-align: center;
+          line-height: .3rem;
+          background: #fff;
+          border-radius: .04rem;
+          font-size: .14rem;
+        }
+        .actives{
+          color: #E73444;
+          font-weight: bold;
+          font-size: .15rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="apps">
+        <!-- 头部 -->
+        <div id="header" class="pr text-center borderb1e header">
+            <i onclick="closewin()" class="iconfont pa icon">&#xe601;</i>
+            <div class="search_btn" @click="search">搜索</div>
+            <div class="ipt_box">
+                <input type="text" class="ipt iconfont" placeholder="&#xe710; 搜索想要的商品" v-model="ipt">
+            </div>
+            <!-- <i class="iconfont fr mr2v">&#xe627;</i> -->
+        </div>
+        <div class="just-between nav_box">
+            <div class="nav" :class="{actives:index===0}" tapmode @click="checkTab(0,'taobao')">淘宝</div>
+            <div class="nav" :class="{actives:index===1}" tapmode @click="checkTab(1,'jd')">京东</div>
+            <div class="nav" :class="{actives:index===2}" tapmode @click="checkTab(2,'pdd')">拼多多</div>
+        </div>
+        <div>
+            <div class="out">
+                <div class="yangs clearfix">
+                    <span>历史搜索</span>
+                    <i @click="removeHistory" class="iconfont fr fs20">&#xe60c;</i>
+                </div>
+                <ul class="yan">
+                    <span v-for="(item, index) in history" :key="index" @click="searchClick(item)">{{ item }}</span>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.min.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        // $api.dom(".").style.top = ;
+
+    };
+    ready()
+    function ready() {
+        var vm = new Vue({
+            el: '#apps',
+            data: {
+                ipt: '',
+                history: [],
+                index:0,
+                tag:'taobao',
+            },
+            created() {
+                if ($api.getStorage('history') && $api.getStorage('history') !== '{}') {
+                    this.history = JSON.parse($api.getStorage('history'));
+                    console.log(this.history)
+                }
+            },
+            mounted() {
+
+            },
+            methods: {
+
+                //选择平台
+                checkTab(index,tag) {
+                    this.index = index,
+                    this.tag = tag
+                },
+                search() {
+                    if (this.ipt) this.tiao(this.ipt);
+                    this.openList(this.ipt)
+                },
+                searchClick(item){
+                    this.tiao(item);
+                    this.openList(item)
+                },
+                tiao(i) {
+                    this.history.push(i);
+                    let t = new Set(this.history); //利用Es6Set不能储存重复的值的属性
+                    t = Array.from(t);
+                    this.history = t
+                    $api.setStorage('history', JSON.stringify(t));
+                },
+                removeHistory(){
+                  $api.rmStorage('history');
+                  this.history = [];
+                },
+                openList(val){
+                  api.openWin({
+                      name: 'search_list',
+                      url: './search_list.html',
+                      pageParam: {
+                          value: val,
+                          tag:this.tag
+                      }
+                  });
+                }
+            }
+        })
+    }
+</script>
+
+</html>

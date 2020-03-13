@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>alert</title>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+        html,body{
+          height: inherit;
+          background: inherit;
+        }
+        body{
+         background-color: transparent !important;
+         background: rgba(0,0,0,0.3);
+        }
+        .maindiv{
+
+        }
+        .box{
+          top: 45vh;
+          transform: translateY(-50%);
+          width: 3rem;
+          padding: .3rem .15rem .2rem;
+          margin: auto;
+          border-radius: .1rem;
+          background: #fff;
+        }
+        .tit{
+          color: #000;
+          font-weight: bold;
+          text-align: center;
+          margin-bottom: .25rem;
+        }
+        .text{
+          color: #4D4D4D;
+          font-size: .14rem;
+          line-height: .24rem;
+          text-align: center;
+        }
+        .btn{
+          width: 2.5rem;
+          height: .35rem;
+          line-height: .35rem;
+          margin: .15rem auto 0;
+          border-radius: .04rem;
+          text-align: center;
+        }
+        .zhuang{
+          position: absolute;
+          top: 0;
+          right: .25rem;
+          width: .3rem;
+          height: .35rem;
+        }
+      </style>
+  </head>
+  <body>
+    <div class="maindiv">
+      <div class="box pr">
+        <div class="tit">
+          温馨提示
+        </div>
+        <div class="text">充值成功</div>
+        <div class="btn bgbtn">知道了</div>
+        <img class="zhuang" src="../../image/l1.png" alt="">
+      </div>
+    </div>
+
+
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        // var text = api.pageParam.text
+        // $api.text($api.dom('.text'), text);
+
+            $api.addEvt($api.dom('.btn'), 'click', function(){
+                 api.closeFrame();
+            });
+            api.setTabBarAttr({
+              index: 0
+            });
+      };
+  </script>
+  </html>

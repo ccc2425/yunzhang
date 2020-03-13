@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          *{
+            outline: none;
+          }
+          .box{
+            padding:.15rem;
+            background: #fff;
+          }
+          .text_box{
+            width: 100%;
+            height: 1.2rem;
+            padding: .15rem;
+            background: #f5f5f5;
+            margin-bottom: .1rem;
+          }
+          .text_box textarea{
+            width: 100%;
+            height: 100%;
+            line-height: .2rem;
+            resize: none;
+          }
+          .num_box{
+            position: absolute;
+            right: .12rem;
+            bottom: .12rem;
+            color: #999;
+          }
+          .btn{
+            width: 3.55rem;
+            height: .4rem;
+            line-height: .4rem;
+            margin: .2rem auto;
+            text-align: center;
+            font-size: .16rem;
+            font-weight: bold;
+            border-radius: .06rem;
+          }
+          .add_pic{
+            width: .72rem;
+            height: .72rem;
+            margin-right: .1rem;
+            text-align: center;
+            line-height: .72rem;
+          }
+          .pic>div{
+            width: .72rem;
+            height: .72rem;
+            margin-right: .1rem;
+            display: inline-block;
+          }
+          .add_pic i{
+            color: #666;
+            font-size: .48rem;
+          }
+          .del{
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: .18rem;
+          }
+          .a{
+            font-size: .20rem;
+          }
+      </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="text_box pr">
+        <textarea class="text" name="name" oninput="textArea()" value=""  maxlength="200" onchange="this.value=this.value.substring(0, 200)" onkeydown="this.value=this.value.substring(0, 200)" onkeyup="this.value=this.value.substring(0, 200)" placeholder="填写您的反馈，我们将积极改进我们的服务!" ></textarea>
+        <span class="num_box"><span class="num">0</span>/200</span>
+      </div>
+      <div class="clearfix pic_box">
+        <div class="fl pic">
+        </div>
+        <div class="fl add_pic">
+          <i class="iconfont" onclick="upImg()">&#xe7a5;</i>
+        </div>
+      </div>
+    </div>
+    <div class="btn bgbtn" onclick="upData()">
+      提交
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript">
+      var up_img = [];
+      var imgs;
+      var imgUrl = [];
+      apiready = function(){
+
+      };
+
+      function textArea() {
+        $api.text($api.dom('.num'), $api.dom('.text').value.length);
+      }
+      //删除图片
+      function delImg(obj) {
+        var _this = obj.parentNode;
+        _this.remove()
+      }
+      //上传图片
+      function upImg() {
+        api.actionSheet({
+            title: '选择',
+            cancelTitle: '取消',
+            buttons: ['从相册选择']
+        }, function(ret, err) {
+            api.getPicture({
+                sourceType: 'album',
+                encodingType: 'jpg',
+                mediaValue: 'pic',
+                destinationType: 'base64',
+                allowEdit: true,
+                quality: 50,
+                targetWidth: 400,
+                targetHeight: 550,
+                saveToPhotoAlbum: false
+            }, function(ret, err) {
+              api.imageCache({
+                  url: ret.base64Data
+              }, function(ret, err){
+                console.log(JSON.stringify(ret));
+                up_img.push(ret.url)
+                $api.dom('.pic').innerHTML +='<div class="pr imgss"><img src="'+ret.url+'" alt=""><i class="iconfont del" onclick="delImg(this)">&#xe72d;</i></div>';
+              });
+            });
+        });
+      }
+      //上传意见
+      var nums = 0;
+      function upData() {
+        api.showProgress({
+            title: '上传中...',
+            modal: false
+        });
+        var imgss = document.getElementsByClassName('imgss')
+        console.log(imgUrl=='');
+        if (imgss.length === 0) {
+          imgs = '';
+          upDatas(imgs)
+        } else {
+          for (var i = 0; i < imgss.length; i++) {
+            upimgs(up_img[i])
+          }
+        }
+      }
+      function upimgs(url) {
+        console.log(url);
+        var imgLength = document.getElementsByClassName('imgss').length
+        console.log(imgLength);
+        axios({
+          url: 'common/upbase64img',
+          data: {
+            img:url,
+          }
+        },function(ret){
+          // console.log(JSON.stringify(ret));
+          nums++
+          // console.log(nums);
+          if (ret.code === 200) {
+            imgUrl += ret.data.url
+            imgUrl += ','
+            if (nums === imgLength) {//当最后一条上传成功获取url后上传意见，否则执行顺序不对
+              upDatas(imgUrl)
+            }
+          } else {
+            api.hideProgress();
+            api.toast({
+                msg: ret.msg,
+                duration: 1000,
+                location: 'middle'
+            });
+            return false;
+          }
+        })
+      }
+
+      function upDatas(img_) {
+        imgs = img_;
+        axios({
+          url: 'user/feedback',
+          data: {
+            content:$api.dom('.text').value,
+            imgs:imgs
+          }
+        },function(ret){
+          api.hideProgress();
+          console.log(JSON.stringify(ret));
+          if (ret.code === 200) {
+            api.toast({
+              msg: '提交成功',
+              duration: 1000,
+              location: 'middle'
+            });
+            setTimeout(function() {
+              api.closeWin();
+            },1000)
+
+          } else {
+            api.toast({
+              msg: ret.msg,
+              duration: 1000,
+              location: 'middle'
+            });
+          }
+        })
+      }
+  </script>
+  </html>

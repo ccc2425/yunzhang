@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/aui-slide.css" /><!--轮播组件-->
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          #header{
+            z-index: 99;
+            width: 100%;
+            position: fixed;
+            background: rgba(255, 255, 255, 0);
+            /*top: 0;*/
+          }
+          .icon{
+            left: .05rem;
+            display: block;
+            width: .32rem;
+            height: .32rem;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.3);
+            line-height: .32rem;
+            color: #fff;
+          }
+          .header{
+            line-height: .4rem;
+            color: transparent;
+          }
+          .aui-slide-page-active{
+            background: #fff;
+          }
+          .box{
+            background: #fff;
+          }
+          .inform{
+            padding: .12rem .1rem;
+            border-bottom: 1px solid #E6E6E6;
+          }
+          .tit{
+            font-size: .17rem;
+            font-weight: bold;
+            line-height: .28rem;
+            margin-bottom: .15rem;
+          }
+          .tit img{
+            width: .18rem;
+            height: .18rem;
+            vertical-align: text-top;
+            margin-right: .05rem;
+          }
+          .price{
+            color: #FF2E41;
+          }
+          .coupon_box{
+            padding: .15rem .1rem 0;
+          }
+          .shop_name i{
+            margin-right: .05rem;
+            font-size: .15rem;
+          }
+          .coupon{
+            width: 100%;
+            height: 1rem;
+            background: url(../../image/shop/bg4.png) no-repeat;
+            background-size: 100% 100%;
+            margin-top: .2rem;
+          }
+          .coupon_num{
+            left: .35rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #D39C43;
+          }
+          .btn{
+            right: .25rem;
+            top: 50%;
+            width: .8rem;
+            height: .35rem;
+            transform: translateY(-50%);
+            line-height: .35rem;
+            text-align: center;
+            border-radius: .05rem;
+          }
+
+          /**/
+          .out{
+            margin-bottom: .6rem;
+          }
+          .title{
+            width: 100%;
+            padding: .2rem;
+            text-align: center;
+            background: #fff;
+          }
+          .title img{
+            width: 1.015rem;
+            height: .14rem;
+          }
+          .list_box{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 100%;
+          }
+          .item{
+            width: 1.825rem;
+            margin-bottom: .1rem;
+            background: #fff;
+          }
+          .item_img{
+            width: 100%;
+            height: 1.825rem;
+          }
+          .item_inform{
+            padding: .08rem .05rem .11rem;
+          }
+          .item_tit{
+            font-size: .15rem;
+            color: #4D4D4D;
+            line-height: .2rem;
+          }
+          .item_tit img{
+            width: .15rem;
+            height: .15rem;
+            vertical-align: text-top;
+            margin-right: .05rem;
+          }
+          .item_btn_l,.item_btn_r{
+            width: .85rem;
+            height: .2rem;
+            line-height: .21rem;
+            text-align: center;
+            color: #fff;
+            font-size: .12rem;
+          }
+          .item_btn_l{
+            background: url(../../image/shop/bg2.png) no-repeat;
+            background-size: 100% 100%;
+          }
+          .item_btn_r{
+            background: url(../../image/shop/bg3.png) no-repeat;
+            background-size: 100% 100%;
+          }
+
+          .bottom{
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            padding: .05rem .1rem;
+            background: #fff;
+          }
+          .get_btn{
+            width: 100%;
+            height: .4rem;
+            line-height: .4rem;
+            text-align: center;
+            border-radius: .05rem;
+          }
+      </style>
+  </head>
+  <body>
+    <!-- 头部 -->
+    <div id="header" class="">
+      <div class="text-center header fs18 pr">
+        <span class="pa icon"><i onclick="closewin()" class="iconfont fs18">&#xe601;</i></span>
+        商品详情
+      </div>
+    </div>
+    <!-- 轮播图 -->
+    <div id="aui-slide" class="">
+        <div id="banner" class="aui-slide-wrap boradius" >
+          <div class="aui-slide-node bg-dark">
+            <img src="../../image/ban1.png" />
+          </div>
+          <div class="aui-slide-node bg-dark">
+            <img src="../../image/ban1.png" />
+          </div>
+        </div>
+        <div class="aui-slide-page-wrap"><!--分页容器--></div>
+      </div>
+    <!-- 商品详情 -->
+    <div class="box">
+      <div class="inform">
+        <div class="tit texthiddens">
+          <img src="../../image/shop/tb.png" alt="">万祥马牌SN全合成机油正品5W30四季通用汽车发动机润滑油4L
+        </div>
+        <div class="just-between lh30">
+          <div class="price cored fs13">券后价<span class="fs15 bold">￥</span><span class="bold fs24">99</span></div>
+          <div class="sale fs13 co666">销量 1236</div>
+        </div>
+        <div class="fs13 co666"><s>原价￥299</s></div>
+      </div>
+      <div class="coupon_box">
+        <div class="shop_name lh20"><i class="iconfont">&#xe663;</i>风驰电掣汽车用品店</div>
+        <div class="coupon pr">
+          <div class="pa coupon_num">
+            <div class="bold"><span class="fs20">￥</span><span class="fs36">200</span>优惠券</div>
+            <div class="time fs13">有效期至2020-01-31日</div>
+          </div>
+          <div class="pa btn gradient">立即领取</div>
+        </div>
+      </div>
+    </div>
+    <div class="out">
+      <div class="title">
+        <img src="../../image/shop/tit.png" alt="">
+      </div>
+      <div class="list_box">
+        <div class="item" tapmode onclick="openItem()">
+          <div class="item_img">
+            <img src="../../image/gas.png" alt="">
+          </div>
+          <div class="item_inform">
+            <div class="item_tit texthidden">
+              <img src="../../image/shop/tb.png" alt="">固特威碳霸燃油宝汽油固特威碳霸燃油宝汽油
+            </div>
+            <div class="just-between lh30">
+              <div class="cored fs11">原价<span class="fs15 bold">￥69.9</span></div>
+              <div class="fs12 co999">销量 1236</div>
+            </div>
+            <div class="just-between">
+              <div class="item_btn_l">可抵扣￥30</div>
+              <div class="item_btn_r">返金币：29</div>
+            </div>
+          </div>
+        </div>
+        <div class="item" tapmode onclick="openItem()">
+          <div class="item_img">
+            <img src="../../image/gas.png" alt="">
+          </div>
+          <div class="item_inform">
+            <div class="item_tit texthidden">
+              <img src="../../image/shop/tb.png" alt="">固特威碳霸燃油宝汽油固特威碳霸燃油宝汽油
+            </div>
+            <div class="just-between lh30">
+              <div class="cored fs11">原价<span class="fs15 bold">￥69.9</span></div>
+              <div class="fs12 co999">销量 1236</div>
+            </div>
+            <div class="just-between">
+              <div class="item_btn_l">可抵扣￥30</div>
+              <div class="item_btn_r">返金币：29</div>
+            </div>
+          </div>
+        </div>
+        <div class="item" tapmode onclick="openItem()">
+          <div class="item_img">
+            <img src="../../image/gas.png" alt="">
+          </div>
+          <div class="item_inform">
+            <div class="item_tit texthidden">
+              <img src="../../image/shop/tb.png" alt="">固特威碳霸燃油宝汽油固特威碳霸燃油宝汽油
+            </div>
+            <div class="just-between lh30">
+              <div class="cored fs11">原价<span class="fs15 bold">￥69.9</span></div>
+              <div class="fs12 co999">销量 1236</div>
+            </div>
+            <div class="just-between">
+              <div class="item_btn_l">可抵扣￥30</div>
+              <div class="item_btn_r">返金币：29</div>
+            </div>
+          </div>
+        </div>
+        <div class="item" tapmode onclick="openItem()">
+          <div class="item_img">
+            <img src="../../image/gas.png" alt="">
+          </div>
+          <div class="item_inform">
+            <div class="item_tit texthidden">
+              <img src="../../image/shop/tb.png" alt="">固特威碳霸燃油宝汽油固特威碳霸燃油宝汽油
+            </div>
+            <div class="just-between lh30">
+              <div class="cored fs11">原价<span class="fs15 bold">￥69.9</span></div>
+              <div class="fs12 co999">销量 1236</div>
+            </div>
+            <div class="just-between">
+              <div class="item_btn_l">可抵扣￥30</div>
+              <div class="item_btn_r">返金币：29</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="get_btn bgbtn">点击领券 ( 返金币: 99 )</div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/aui-slide.js"></script>
+  <script type="text/javascript" src="../../script/aui-scroll.js" ></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript">
+      var body_ = document.querySelector('body');
+      var w = document.documentElement.clientWidth || document.body.clientWidth;//获取屏幕高度
+      var goods_id;
+      apiready = function(){
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        goods_id = api.pageParam.goods_id;
+        api.showProgress({
+            title: '努力加载中...',
+            modal: false
+        });
+        getGoods()
+      };
+      //轮播
+      var slide = new auiSlide({
+         container:document.getElementById("aui-slide"),
+         // "width":300,
+         "height":w,
+         "speed":300,
+         "pageShow":true,
+         "autoPlay": 1000, //自动播放
+         "pageStyle":'dot',
+         "loop":true,
+         'dotPosition':'center',
+     })
+
+     function openItem() {
+      //  api.openWin({
+      //      name: 'item',
+      //      url: './item.html',
+      //      pageParam: {
+      //          name: 'test'
+      //      }
+      //  });
+     }
+     //获取商品数据
+     function getGoods() {
+       axiosShop({
+         url: 'api/detailv2',
+         data:{
+           item_id:goods_id,
+           token:$api.getStorage('shoptoken'),
+         }
+       },function(ret){
+         api.hideProgress();
+         console.log(JSON.stringify(ret));
+         if (ret.errcode === 200) {
+
+         }else {
+           api.toast({
+             msg: ret.msg,
+             duration: 1000,
+             location: 'middle'
+           });
+         }
+       })
+     }
+     //监听滑动
+     var scroll = new auiScroll({
+         listen:true,
+         distance:200 //判断到达底部的距离，isToBottom为true
+     },function(ret){
+       var scrollTop = ret.scrollTop;
+      //  console.log(scrollTop);
+       if (scrollTop>30) {
+         $api.dom('.icon').style.background = 'rgba(0,0,0,0)';
+         $api.dom('.icon').style.color = '#333';
+         $api.dom('.header').style.color = '#333';
+       }else {
+         $api.dom('.icon').style.background = 'rgba(0,0,0,.3)';
+         $api.dom('.icon').style.color = '#fff';
+         $api.dom('.header').style.color = 'transparent';
+       }
+       if (scrollTop>300) {
+         scrollTop = 100;
+         return scrollTop;
+       }
+       header.style.background = 'rgba(255,255,255,' + scrollTop / 100 + ')';
+     });
+  </script>
+  </html>

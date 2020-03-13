@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+      <link rel="stylesheet" type="text/css" href="../../css/public.css"/>
+      <style>
+          body{
+
+          }
+          [v-cloak]{
+            display: none;
+          }
+          /*排序*/
+          #sorting{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+          }
+          .sorting {
+            width: 90vw;
+            height: .4rem;
+            display: flex;
+            justify-content: space-around;
+            line-height: .4rem;
+            background-color: #fff;
+            color: #aaa;
+          }
+          .paixu{
+            width: 8px;
+            height: .1rem;
+          }
+          .active{
+            color: #E73444;
+          }
+          .activei{
+            transform: rotate(180deg);
+            display: inline-block;
+            transition: .1s;
+          }
+          /*item*/
+          .box{
+            padding: .1rem 0;
+            margin-top: .4rem;
+          }
+          .list_box{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 100%;
+          }
+          .item{
+            width: 1.825rem;
+            margin-bottom: .1rem;
+            background: #fff;
+          }
+          .item_img{
+            width: 100%;
+            height: 1.825rem;
+          }
+          .item_inform{
+            padding: .08rem .05rem .11rem;
+          }
+          .item_tit{
+            font-size: .15rem;
+            color: #4D4D4D;
+            line-height: .2rem;
+          }
+          .item_tit img{
+            width: .15rem;
+            height: .15rem;
+            vertical-align: text-top;
+            margin-right: .05rem;
+          }
+          .item_btn_l,.item_btn_r{
+            width: .85rem;
+            height: .2rem;
+            line-height: .21rem;
+            text-align: center;
+            color: #fff;
+            font-size: .12rem;
+          }
+          .item_btn_l{
+            background: url(../../image/shop/bg2.png) no-repeat;
+            background-size: 100% 100%;
+          }
+          .item_btn_r{
+            background: url(../../image/shop/bg3.png) no-repeat;
+            background-size: 100% 100%;
+          }
+      </style>
+  </head>
+  <body>
+    <div id="apps" v-cloak>
+      <!-- 排序 -->
+      <div id="sorting" class="clearfix bgcf">
+        <div class="sorting fl fs12">
+          <div class="sorts" :class="{active:index===0}" @click="sort(0,'')">综合 <i class="iconfont">&#xe608;</i></div>
+          <div class="sorts" :class="{active:index===1}" @click="sort(1,'sales')">销量 <i class="iconfont">&#xe608;</i></div>
+          <div class="sorts" :class="{active:index===2}" @click="sort(2,'price')">价格 <i class="iconfont">&#xe608;</i></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="list_box">
+          <div v-for="item in list" class="item" tapmode @click="openItem(item.item_id)">
+            <div class="item_img">
+              <img :src="item.master_image" alt="">
+            </div>
+            <div class="item_inform">
+              <div class="item_tit texthidden">
+                <img :src="img[item.item_type]" alt="">{{item.title}}
+              </div>
+              <div class="just-between lh30">
+                <div class="cored fs11">原价<span class="fs15 bold">￥{{item.old_price}}</span></div>
+                <div class="fs12 co999">销量 {{item.sales}}</div>
+              </div>
+              <div class="just-between">
+                <div class="item_btn_l">{{item.coupon_price}}元优惠券</div>
+                <div class="item_btn_r">返金币：{{item.ygsr}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/vue.min.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/ajax.js"></script>
+  <script type="text/javascript">
+        var value;
+        var type;
+        apiready = function(){
+          value = api.pageParam.value;
+          ready()
+          //下拉刷新
+          api.setRefreshHeaderInfo({
+                visible: true,
+                loadingImg: '../../image/loading_more.gif',
+                bgColor: '#ccc',
+                textColor: '#fff',
+                textDown: '下拉刷新...',
+                textUp: '松开刷新...',
+                showTime: true //显示更新时间
+            }, function(ret, err) {
+              // api.refreshHeaderLoadDone()
+              setTimeout(function(){
+                api.refreshHeaderLoadDone();
+                window.location.reload()
+              },1000)
+                //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+          });
+        };
+        function ready() {
+          var vm = new Vue({
+            el: '#apps',
+            data: {
+              index: 0,
+              list: [],
+              page: 1,
+              pagesize: 10,
+              sort_field: '',
+              cid: value,
+              tage: '',
+              state: true,
+              shoptoken: $api.getStorage('shoptoken'),
+              img: ['../../image/shop/tb.png', '../../image/shop/tm.png', '../../image/shop/jd.png', '../../image/shop/pdd.png']
+            },
+            mounted: function mounted() {
+              // this.getList()
+              api.showProgress({
+                title: '努力加载中...',
+                modal: false
+              });
+              this.getmain(); // this.banners()
+
+              var this_ = this;
+              api.addEventListener({
+                name: 'scrolltobottom',
+                extra: {
+                  threshold: -1 //设置距离底部多少距离时触发，默认值为0，数字类型
+
+                }
+              }, function (ret, err) {
+                this_.loading();
+              });
+            },
+            methods: {
+              getmain: function getmain() {
+                var this_ = this;
+                console.log(this_.shoptoken);
+                axiosShop({
+                  url: 'api/items',
+                  data: {
+                    q: "",
+                    sort_field: this_.sort_field,
+                    sort_direction: "desc",
+                    cid: this_.cid,
+                    pagesize: this_.pagesize,
+                    page: this_.page,
+                    tage: this_.tage,
+                    token: this_.shoptoken
+                  }
+                }, function (ret) {
+                  api.hideProgress();
+                  console.log(JSON.stringify(ret));
+
+                  if (ret.errcode === 200) {
+                    if (ret.data.item.length < this_.pagesize) {
+                      this_.state = false;
+                    }
+
+                    if (this_.page === 1) {
+                      this_.list = ret.data.item;
+                    } else {
+                      this_.list.push.apply(this_.list, ret.data.item);
+                    }
+                  } else {
+                    api.toast({
+                      msg: ret.msg,
+                      duration: 1000,
+                      location: 'middle'
+                    });
+                  }
+                });
+              },
+              sort: function sort(index, val) {
+                console.log(val);
+                this.sort_field = val;
+                this.index = index;
+                this.getmain();
+              },
+              //商品详情
+              openItem: function openItem(goods_id) {
+                api.openWin({
+                  name: 'item',
+                  url: './item.html',
+                  pageParam: {
+                    goods_id: goods_id
+                  }
+                });
+              },
+              loading: function loading() {
+                //上拉加载
+                if (this.state) {
+                  this.page++;
+                  this.getmain();
+                }
+              }
+            }
+          });
+        }
+  </script>
+  </html>
